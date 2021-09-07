@@ -1,13 +1,13 @@
-import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class ProjectCriterion {
-    
-    @PrimaryColumn({type:'uuid'})
-    id_criterio     : number;
+ 
+    @PrimaryGeneratedColumn('uuid')
+    id_criterio: string;
 
-    @Column({nullable:false})
-    id_projeto      : number;
+    @Column({nullable:false, type: "uuid"})
+    id_projeto      : string;
 
     @Column({nullable:false})
     desc_criterio   : string;

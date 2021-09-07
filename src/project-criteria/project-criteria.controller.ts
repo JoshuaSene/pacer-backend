@@ -1,38 +1,43 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body,Param, Delete, Query, Put } from '@nestjs/common';
 import { ProjectCriteriaService } from './project-criteria.service';
 import { CreateProjectCriterionDto } from './dto/create-project-criterion.dto';
 import { UpdateProjectCriterionDto } from './dto/update-project-criterion.dto';
+import { ProjectCriterion } from './entities/project-criterion.entity';
 
 @Controller('project-criteria')
 export class ProjectCriteriaController {
   constructor(private readonly projectCriteriaService: ProjectCriteriaService) {}
 
   @Post()
-  create(@Body() createProjectCriterionDto: CreateProjectCriterionDto) {
+  create(@Body() createProjectCriterionDto: CreateProjectCriterionDto): Promise<ProjectCriterion> {
     return this.projectCriteriaService.create(createProjectCriterionDto);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.projectCriteriaService.findAll();
-  // }
+  @Get()
+  findAll(): Promise<ProjectCriterion[]>  { 
+    return this.projectCriteriaService.findAll();
+  }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: number) {
-  //   const criteria = this.projectCriteriaService.findOne(id);
-  //   if (!criteria) {
-  //     throw new NotFoundException('Criteria does not exists.');
-  //   }
-  //   return criteria;
-  // }
+  @Get(':id')
+  find(
+    @Param('id') id: string, 
+    @Query('snAtivo') snAtivo: string 
+    ): Promise<ProjectCriterion[]>  {
+    const criteria = this.projectCriteriaService.find(id, snAtivo);
+    return criteria;
+  }
+  
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateProjectCriterionDto: UpdateProjectCriterionDto
+    ):Promise<ProjectCriterion>  {
+      return this.projectCriteriaService.update(id, updateProjectCriterionDto);
+  }
+  
 
-  // @Patch(':id')
-  // update(@Param('id') id: number, @Body() updateProjectCriterionDto: UpdateProjectCriterionDto) {
-  //   return this.projectCriteriaService.update(id, updateProjectCriterionDto);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: number) {
-  //   return this.projectCriteriaService.remove(id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string):Promise<String>  {
+    return this.projectCriteriaService.delete(id);
+  }
 }

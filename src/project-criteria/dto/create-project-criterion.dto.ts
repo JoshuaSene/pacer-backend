@@ -1,11 +1,8 @@
-import {IsNumber, IsString, MinLength} from 'class-validator';
+import {IsNumber, IsString, IsUUID, MinLength} from 'class-validator';
 export class CreateProjectCriterionDto {
-   
-    @IsNumber()
-    id_criterio: number;
-
-    @IsNumber()
-    id_projeto: number;
+ 
+    @IsUUID()
+    id_projeto: string;
 
     @IsString()
     desc_criterio: string;

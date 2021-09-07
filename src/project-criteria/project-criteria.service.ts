@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Body, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProjectCriterionDto } from './dto/create-project-criterion.dto';
@@ -14,7 +14,7 @@ export class ProjectCriteriaService {
   ) {}
   
   
-  create(createProjectCriterionDto: CreateProjectCriterionDto) {
+  async create(createProjectCriterionDto: CreateProjectCriterionDto): Promise<ProjectCriterion>  {
     const criteria =  this.projectCriterionRepository.create(
       createProjectCriterionDto
     ); 
@@ -22,34 +22,33 @@ export class ProjectCriteriaService {
     return criteriaSaved ;
   }
 
-//   findAll() {
-//     return this.Criterion;
-//   }
+ async findAll(): Promise<ProjectCriterion[]>  {
+    return this.projectCriterionRepository.find();
+  }
 
-//   findOne(id: number) {
-//     const criteriaId = this.Criterion.findIndex((criteria) => criteria.id_criterio === id);
-//     return this.Criterion[criteriaId];
-//   }
+ async find(id: string, snAtivo: string): Promise<ProjectCriterion[]>  {
+   console.log(id, snAtivo)
+    const criterias = await this.projectCriterionRepository.find({
+     
+      id_projeto: `${id}`, 
+        sn_ativo: `${snAtivo}`,
+      
+    }) 
+    if (criterias.length == 0) {
+      throw new NotFoundException('Criteria does not exists.');
+    }
+    return criterias
+  }
 
-//   update(id: number, updateProjectCriterionDto: UpdateProjectCriterionDto) {
-//     const criteria = this.findOne(id);
-//     const newCriteria = {
-//       ...criteria,
-//       ...updateProjectCriterionDto,
-//     }
-//     const criteriaId = this.Criterion.findIndex((criteria) => criteria.id_criterio === id);
-//     this.Criterion[criteriaId] = newCriteria;
-//     return newCriteria;
-//   }
+  async update(id: string, updateProjectCriterionDto: UpdateProjectCriterionDto): Promise<ProjectCriterion> {
+    const criteria: any = await this.projectCriterionRepository.findOne(id);
+    const mergeCriteria = this.projectCriterionRepository.merge(criteria, updateProjectCriterionDto);
+    return  this.projectCriterionRepository.save(mergeCriteria);
+ 
+  }
 
-//   remove(id: number) {
-//     const criteriaId = this.Criterion.findIndex((criteria) => criteria.id_criterio === id);
-
-//     if (criteriaId === -1) {
-//       throw new NotFoundException(`criteria #${id} not found`) 
-//     }
-
-//     this.Criterion.splice(criteriaId, 1);
-//     return `criteria #${id} has been deleted`;
-//   }
+  async delete(id: string) : Promise<string>  {
+  const projectCrit = this.projectCriterionRepository.delete(id)
+  return `id ${id} has been deleted`
+  }
 }
