@@ -12,27 +12,27 @@ export class ProjectCriteriaController {
     return this.projectCriteriaService.create(createProjectCriterionDto);
   }
 
-  @Get()
-  findAll() {
-    return this.projectCriteriaService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.projectCriteriaService.findAll();
+  // }
 
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    const criteria = this.projectCriteriaService.findOne(id);
-    if (!criteria) {
-      throw new NotFoundException('Criteria does not exists.');
-    }
-    return criteria;
-  }
+  // @Get(':id')
+  // findOne(@Param('id') id: number) {
+  //   const criteria = this.projectCriteriaService.findOne(id);
+  //   if (!criteria) {
+  //     throw new NotFoundException('Criteria does not exists.');
+  //   }
+  //   return criteria;
+  // }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() updateProjectCriterionDto: UpdateProjectCriterionDto) {
-    return this.projectCriteriaService.update(id, updateProjectCriterionDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: number, @Body() updateProjectCriterionDto: UpdateProjectCriterionDto) {
+  //   return this.projectCriteriaService.update(id, updateProjectCriterionDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.projectCriteriaService.remove(id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: number) {
+  //   return this.projectCriteriaService.remove(id);
+  // }
 }

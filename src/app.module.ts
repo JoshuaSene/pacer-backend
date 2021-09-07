@@ -6,7 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), ProjectCriteriaModule],
+  
+  imports: [TypeOrmModule.forRoot({
+    autoLoadEntities: true,
+  }), ProjectCriteriaModule], 
   controllers: [AppController],
   providers: [AppService],
 })
