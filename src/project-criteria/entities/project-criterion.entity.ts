@@ -6,9 +6,6 @@ export class ProjectCriterion {
     @PrimaryGeneratedColumn('uuid')
     id_criterio: string;
 
-    @Column({nullable:false, type: "uuid"})
-    id_projeto      : string;
-
     @Column({nullable:false})
     desc_criterio   : string;
 
@@ -20,7 +17,4 @@ export class ProjectCriterion {
 
     @Column({nullable:false})
     nota_peso       : number;
-
-    @Column({nullable:false})
-    sn_ativo        : string;
 }

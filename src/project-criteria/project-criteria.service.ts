@@ -26,13 +26,9 @@ export class ProjectCriteriaService {
     return this.projectCriterionRepository.find();
   }
 
- async find(id: string, snAtivo: string): Promise<ProjectCriterion[]>  {
-   console.log(id, snAtivo)
+ async find(id: string): Promise<ProjectCriterion[]>  {
     const criterias = await this.projectCriterionRepository.find({
-     
-      id_projeto: `${id}`, 
-        sn_ativo: `${snAtivo}`,
-      
+      id_criterio: `${id}`
     }) 
     if (criterias.length == 0) {
       throw new NotFoundException('Criteria does not exists.');

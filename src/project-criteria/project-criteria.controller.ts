@@ -21,9 +21,8 @@ export class ProjectCriteriaController {
   @Get(':id')
   find(
     @Param('id') id: string, 
-    @Query('snAtivo') snAtivo: string 
     ): Promise<ProjectCriterion[]>  {
-    const criteria = this.projectCriteriaService.find(id, snAtivo);
+    const criteria = this.projectCriteriaService.find(id);
     return criteria;
   }
   
