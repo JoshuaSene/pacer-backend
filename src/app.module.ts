@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CriteriaModule,  } from './project-criteria/criteria.module';
+import { CriteriaModule,  } from './criteria/criteria.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 
