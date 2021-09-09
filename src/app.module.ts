@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProjectCriteriaModule } from './project-criteria/project-criteria.module';
+import { CriteriaModule,  } from './project-criteria/criteria.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 
@@ -9,7 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   
   imports: [TypeOrmModule.forRoot({
     autoLoadEntities: true,
-  }), ProjectCriteriaModule], 
+  }), CriteriaModule], 
   controllers: [AppController],
   providers: [AppService],
 })
