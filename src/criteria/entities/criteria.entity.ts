@@ -1,15 +1,15 @@
-import { Entity, Column,  PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column,  PrimaryGeneratedColumn, PrimaryColumn } from "typeorm";
 
-@Entity()
+@Entity({name:"criteria"})
 export class Criteria {
- 
-    @Column({name:"id_criteria"})
-    @PrimaryGeneratedColumn('uuid')
+  
+  
+    @PrimaryGeneratedColumn("uuid", {name: "id_criteria"})
     idCriteria      : string;
 
-    @Column({nullable:false, name: "desc_criteria"})
+    @Column({nullable:false, name: "desc_criteria", length:"800"})
     descCriteria   : string;
    
-    @Column({nullable:false, name: "sn_ativo"})
+    @Column({nullable:false, name: "sn_ativo", length:"1"})
     snAtivo        : string;
 }

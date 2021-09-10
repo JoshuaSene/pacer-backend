@@ -7,15 +7,16 @@
     "database": "pacer", 
     "synchronize": false,
     "logging": true,
-    "entities": ["dist/**/**/*.js"],
-    "migrations": ["dist/database/migrations/*.js"],
-    "subscribers": ["dist/subscriber/**/*.js"],
-    "cli": {
-      "entitiesDir": "src/entity",
-      "migrationsDir": "src/database/migrations",
-      "subscribersDir": "src/subscriber"
-    }
+    "entities": [
+      "src/**/entities/*.entity.{ts,js}"
+  ],
+  "migrations": [
+      "src/database/migrations/*.{ts,js}"
+  ],
+  "cli": {
+      "entitiesDir": "src/modules",
+      "migrationsDir": "src/database/migrations"
   }
+}
 
 
- 
