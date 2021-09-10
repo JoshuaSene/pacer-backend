@@ -5,17 +5,18 @@
     "username": "root",
     "password": "fatec",
     "database": "pacer", 
-    "synchronize": true,
-    "logging": false,
-    "entities": ["dist/**/**/*.js"],
-    "migrations": ["dist/database/migrations/*.js"],
-    "subscribers": ["dist/subscriber/**/*.js"],
-    "cli": {
-      "entitiesDir": "src/entity",
-      "migrationsDir": "src/database/migrations",
-      "subscribersDir": "src/subscriber"
-    }
+    "synchronize": false,
+    "logging": true,
+    "entities": [
+      "src/**/entities/*.entity.{ts,js}"
+  ],
+  "migrations": [
+      "src/database/migrations/*.{ts,js}"
+  ],
+  "cli": {
+      "entitiesDir": "src/modules",
+      "migrationsDir": "src/database/migrations"
   }
+}
 
 
- 

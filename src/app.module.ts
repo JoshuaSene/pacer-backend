@@ -1,21 +1,22 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProjectCriteriaModule } from './project-criteria/project-criteria.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CriteriaProjectModule } from './criteria-project/criteria-project.module';
+import { AppController } from './app.controller';
 import { ProjectModule } from './project/project.module';
+import { CriteriaModule } from './criteria/criteria.module';
+import { CriteriaProjectModule } from './criteria-project/criteria-project.module';
 
-
-@Module({
-  
-  imports: [
-    TypeOrmModule.forRoot({
-      autoLoadEntities: true,
-      keepConnectionAlive: true
-    }), 
-    ProjectCriteriaModule, CriteriaProjectModule, ProjectModule
-  ], 
+@Module({  
+  imports: [TypeOrmModule.forRoot({
+    type: 'mysql',
+    host: 'localhost',
+    port: 3306,
+    username: 'root',
+    password: 'root',
+    database: 'pacer',
+    entities: ['dist/**/*.entity{.ts,.js}'],
+    synchronize: false
+  }), CriteriaModule, CriteriaProjectModule, ProjectModule], 
   controllers: [AppController],
   providers: [AppService],
 })
