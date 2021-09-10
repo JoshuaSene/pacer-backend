@@ -14,7 +14,7 @@ export class ProjectCriteriaController {
   }
 
   @Get()
-  findAll(): Promise<ProjectCriterion[]>  { 
+  findAll(): Promise<ProjectCriterion[]> { 
     return this.projectCriteriaService.findAll();
   }
 
@@ -22,7 +22,7 @@ export class ProjectCriteriaController {
   find(
     @Param('id') id: string, 
     @Query('snAtivo') snAtivo: string 
-    ): Promise<ProjectCriterion[]>  {
+    ): Promise<ProjectCriterion[]> {
     const criteria = this.projectCriteriaService.find(id, snAtivo);
     return criteria;
   }
@@ -31,13 +31,13 @@ export class ProjectCriteriaController {
   update(
     @Param('id') id: string,
     @Body() updateProjectCriterionDto: UpdateProjectCriterionDto
-    ):Promise<ProjectCriterion>  {
+    ):Promise<ProjectCriterion> {
       return this.projectCriteriaService.update(id, updateProjectCriterionDto);
   }
   
 
   @Delete(':id')
-  remove(@Param('id') id: string):Promise<String>  {
+  remove(@Param('id') id: string):Promise<String> {
     return this.projectCriteriaService.delete(id);
   }
 }
