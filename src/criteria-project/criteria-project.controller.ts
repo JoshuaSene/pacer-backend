@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, BadRequestException } from '@nestjs/common';
 import { CriteriaProjectService } from './criteria-project.service';
 import { CreateCriteriaProjectDto } from './dto/create-criteria-project.dto';
 import { UpdateCriteriaProjectDto } from './dto/update-criteria-project.dto';
+import { CriteriaProject } from './entities/criteria-project.entity';
 
 @Controller('criteria-project')
 export class CriteriaProjectController {
@@ -13,22 +14,53 @@ export class CriteriaProjectController {
   }
 
   @Get()
-  findAll() {
+  findAll(): Promise<CriteriaProject[]> {
     return this.criteriaProjectService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.criteriaProjectService.findOne(+id);
+  @Get()
+  findOne(
+    @Query('idCriteria') idCriteria: string,
+    @Query('idProject') idProject: string,
+    @Query('snActivated') snActivated: string
+  ): Promise<CriteriaProject> {
+    return this.criteriaProjectService.find(idCriteria, idProject, snActivated);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCriteriaProjectDto: UpdateCriteriaProjectDto) {
-    return this.criteriaProjectService.update(+id, updateCriteriaProjectDto);
+  @Get('find-many')
+  findMany(
+    @Query('snActivated') snActivated: string,
+    @Query('idCriteria') idCriteria?: string,
+    @Query('idProject') idProject?: string
+  ): Promise<CriteriaProject[]> {
+    if(Helper.isEmpty(idCriteria) && Helper.isEmpty(idProject)) {
+      throw new BadRequestException('Neither idCriteria or idProject where provided. At least one of them must be provided.');
+    }
+
+    if(Helper.isEmpty(idCriteria)) {
+      return this.criteriaProjectService.findForProject(idProject, snActivated);
+    }
+    
+    if(Helper.isEmpty(idProject)) {
+      return this.criteriaProjectService.findForCriteria(idCriteria, snActivated);
+    }
+
+    throw new BadRequestException('You must provide idCriteria or idProject, not both.');
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.criteriaProjectService.remove(+id);
+  @Patch()
+  update(
+    @Query('idCriteria') idCriteria: string,
+    @Query('idProject') idProject: string, 
+    @Body() dto: UpdateCriteriaProjectDto) {
+    return this.criteriaProjectService.update(idCriteria, idProject, dto);
+  }
+
+  @Delete()
+  remove(
+    @Query('idCriteria') idCriteria: string,
+    @Query('idProject') idProject: string,
+  ) {
+    return this.criteriaProjectService.delete(idCriteria, idProject);
   }
 }
