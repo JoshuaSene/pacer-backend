@@ -3,9 +3,10 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class Project {
 
-    @PrimaryGeneratedColumn('uuid')
-    @Column({name: "id_project"})
+    @PrimaryGeneratedColumn('uuid', {name: "id_project"})
     idProject: string;
+
+    //Add User id 
   
     @Column({nullable: false})
     description: number;

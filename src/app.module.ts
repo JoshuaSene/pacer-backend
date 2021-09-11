@@ -8,11 +8,11 @@ import { CriteriaProjectModule } from './criteria-project/criteria-project.modul
 
 @Module({  
   imports: [TypeOrmModule.forRoot({
-    type: 'mysql',
+    type: 'mariadb',
     host: 'localhost',
     port: 3306,
     username: 'root',
-    password: 'root',
+    password: 'fatec',
     database: 'pacer',
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: false
