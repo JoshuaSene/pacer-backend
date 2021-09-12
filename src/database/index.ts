@@ -1,8 +1,8 @@
-import { createConnection, getConnectionManager, getConnectionOptions } from 'typeorm'
+import { getConnectionManager, getConnectionOptions } from 'typeorm'
 
 const connect = async () => {
     const connectionManager = getConnectionManager();
-
+    
     if(!connectionManager.has("default")){
         const connectionOptions = await getConnectionOptions();
         connectionManager.create(connectionOptions);
