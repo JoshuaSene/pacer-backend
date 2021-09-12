@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { Criteria } from 'src/criteria/entities/criteria.entity';
+import { CriteriaProject } from './entities/criteria-project.entity';
 import { CreateCriteriaProjectDto } from './dto/create-criteria-project.dto';
 import { UpdateCriteriaProjectDto } from './dto/update-criteria-project.dto';
-import { CriteriaProject } from './entities/criteria-project.entity';
+import { Project } from 'src/project/entities/project.entity';
 
 @Injectable()
 export class CriteriaProjectService {
@@ -11,14 +14,30 @@ export class CriteriaProjectService {
   constructor( 
     @InjectRepository(CriteriaProject) 
     private repository: Repository<CriteriaProject>,
+    @InjectRepository(Criteria) 
+    private criteriaRepository: Repository<Criteria>,
+    @InjectRepository(Project) 
+    private projectRepository: Repository<Project>,
   ) {}
   
   
   async create(createCriteriaDto: CreateCriteriaProjectDto): Promise<CriteriaProject>  {
-    const criteria =  this.repository.create(
+    const criteria = this.criteriaRepository.findOne(createCriteriaDto.idCriteria);
+
+    if(!criteria || criteria === null) {
+      throw new NotFoundException(`Criteria with id ${createCriteriaDto.idCriteria} not found.`)
+    }
+
+    const project = this.projectRepository.findOne(createCriteriaDto.idProject);
+
+    if(!project || project === null) {
+      throw new NotFoundException(`Project with id ${createCriteriaDto.idProject} not found.`)
+    }
+
+    const createdCriteria =  this.repository.create(
       createCriteriaDto
     ); 
-    const criteriaSaved =  this.repository.save(criteria);
+    const criteriaSaved =  this.repository.save(createdCriteria);
     return criteriaSaved ;
   }
 

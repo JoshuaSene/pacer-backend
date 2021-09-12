@@ -9,7 +9,7 @@ export class Project {
     //Add User id 
   
     @Column({nullable: false})
-    description: number;
+    description: string;
 
     @Column({nullable: false, name: "dt_opening", type: 'date'})
     openingDate: string;
