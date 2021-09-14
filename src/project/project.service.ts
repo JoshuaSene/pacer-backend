@@ -22,8 +22,8 @@ export class ProjectService {
     return savedProject;
   }
 
-  findAll() {
-    return `This action returns all project`;
+  findAll(): Promise<Project[]> {
+    return this.repository.find();
   }
 
   findOne(id: number) {
