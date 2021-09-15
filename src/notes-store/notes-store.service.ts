@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateNotesStoreDto } from './dto/create-notes-store.dto';
 import { UpdateNotesStoreDto } from './dto/update-notes-store.dto';
+import { NotesStore } from './entities/notes-store.entity';
 
 @Injectable()
 export class NotesStoreService {
-  create(createNotesStoreDto: CreateNotesStoreDto) {
-    return 'This action adds a new notesStore';
+
+  constructor( 
+    @InjectRepository(NotesStore) 
+    private noteStoreRepository: Repository<NotesStore>,
+  ) {}
+
+ 
+  async create(createNotesStoreDto: CreateNotesStoreDto): Promise<NotesStore>  {
+    const notes =  this.noteStoreRepository.create(
+      createNotesStoreDto
+    ); 
+    const notesStoreSaved =  this.noteStoreRepository.save(notes);
+    return notesStoreSaved;
   }
 
-  findAll() {
-    return `This action returns all notesStore`;
+  async findAll(): Promise<NotesStore[]>  {
+    return this.noteStoreRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} notesStore`;
-  }
+  
+ async find(id: string): Promise<NotesStore[]>  {
+   const notes = await this.noteStoreRepository.find({
+    
+    idAvaliacao: `${id}`
+     
+   }) 
+   if (notes.length == 0) {
+     throw new NotFoundException('Avaliation does not exists.');
+   }
+   return notes
+ }
 
-  update(id: number, updateNotesStoreDto: UpdateNotesStoreDto) {
-    return `This action updates a #${id} notesStore`;
-  }
+ async update(id: string, updateNotesDto: UpdateNotesStoreDto): Promise<NotesStore> {
+  const notes: any = await this.noteStoreRepository.findOne(id);
+  const mergeNotes = this.noteStoreRepository.merge(notes, updateNotesDto);
+  return  this.noteStoreRepository.save(mergeNotes);
 
-  remove(id: number) {
-    return `This action removes a #${id} notesStore`;
-  }
+}
+
+  async delete(id: string) : Promise<string>  { 
+    const projectCrit = this.noteStoreRepository.delete(id)
+    return `id ${id} has been deleted`
+    }
 }
