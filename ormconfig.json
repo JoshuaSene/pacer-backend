@@ -1,9 +1,9 @@
 {
-    "type": "mysql",
+    "type": "mariadb",
     "host": "localhost",
-    "port": 3306,
+    "port": 3307,
     "username": "root",
-    "password": "fatec",
+    "password": "root",
     "database": "pacer", 
     "synchronize": false,
     "logging": true,
