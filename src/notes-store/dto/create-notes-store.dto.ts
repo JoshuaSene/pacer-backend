@@ -6,10 +6,6 @@ export class CreateNotesStoreDto {
 
     @IsString()
     @ApiProperty()
-    idAvaliacao: string;
-
-    @IsString()
-    @ApiProperty()
     idAvaliador: string;
 
     @IsString()
