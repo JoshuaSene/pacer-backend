@@ -6,17 +6,29 @@ export class CreateNotesStoreDto {
 
     @IsString()
     @ApiProperty()
-    idAvaliador: string;
+    idEvaluator: string;
 
     @IsString()
     @ApiProperty()
-    idAvaliado: string;
+    idEvaluated: string;
+
+    @IsString()
+    @ApiProperty()
+    idGroup: string;
+
+    @IsString()
+    @ApiProperty()
+    idCriteria: string;
+
+    @IsString()
+    @ApiProperty()
+    idSprint: string;
 
     @IsNumber()
     @ApiProperty()
-    nota: number;
+    note: number;
 
     @IsString()
     @ApiProperty()
-    observacao: string;
+    obs: string;
 }

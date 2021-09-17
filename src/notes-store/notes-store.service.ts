@@ -30,7 +30,7 @@ export class NotesStoreService {
  async find(id: string): Promise<NotesStore[]>  {
    const notes = await this.noteStoreRepository.find({
     
-    idAvaliacao: `${id}`
+    idEvaluation: `${id}`
      
    }) 
    if (notes.length == 0) {
