@@ -20,7 +20,7 @@ O projeto consiste em criar um sistema de avaliações alunos durante um process
 - **Typeorm**
 - Banco de dados: **Mysql** / **MariaDB**
 
-##  ⚙️Bootstrap
+##  ⚙️Primeiros Passos:
 #####  1. Clonar repositório
 ```
 git clone https://github.com/JoshuaSene/pacer-backend.git
