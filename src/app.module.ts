@@ -11,9 +11,9 @@ import { CriteriaProjectModule } from './criteria-project/criteria-project.modul
   imports: [TypeOrmModule.forRoot({
     type: 'mariadb',
     host: 'localhost',
-    port: 3307,
+    port: 3309,
     username: 'root',
-    password: 'root',
+    password: '',
     database: 'pacer',
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: false
