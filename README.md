@@ -20,6 +20,34 @@ O projeto consiste em criar um sistema de avaliações alunos durante um process
 - **Typeorm**
 - Banco de dados: **Mysql** / **MariaDB**
 
+## ✨ MVP
+##### 1° Sprint
+
+- Cadastro de Critério de Avaliação
+- Cadastro de critério para um Projeto
+- Cadastro de nota por integrante
+
+##### 2ª Sprint
+
+- Cadastrar projetos
+- Cadastrar equipes
+- Cadastrar sprints
+- Cadastrar Usuários
+- Exibir pendências por parte do avaliador
+- Modificar nota antes do fim da Sprint
+
+##### 3ª Sprint
+
+- Gerar relatórios (graficos)
+- Sistema de Login
+
+##### 4ª Sprint
+
+- Alteração de dados cadastrais
+- Método de recuperação de senha
+- Página de Apresentação do sistema
+
+
 ##  ⚙️Primeiros Passos:
 #####  1. Clonar repositório
 ```
@@ -38,3 +66,4 @@ $ yarn typeorm migration:run
 ```
 $ yarn start:dev
 ```
+
