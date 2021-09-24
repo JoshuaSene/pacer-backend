@@ -1,5 +1,5 @@
 import { Criteria } from "src/criteria/entities/criteria.entity";
-import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class NotesStore {
@@ -25,7 +25,9 @@ export class NotesStore {
     @Column({nullable:false, name: "id_sprint"})
     idSprint   : string;
 
-    @Column({nullable:false, name: "note"})
+    // Marcos => A nota deverá iniciar como null, porque pode haver nota zero e 
+    // o null indicará que a nota ainda não foi aplicada
+    @Column({nullable: true, name: "note"}) 
     note: number;
    
     @Column({nullable: true, name: "obs", length:"800"})
