@@ -26,6 +26,13 @@ export class NotesStoreController {
     return criteria;
   }
   
+  @Get('pending/:idEvaluator')
+  findPending(
+    @Param('idEvaluator') idEvaluator: string, 
+    ): Promise<NotesStore[]>  {
+    return this.notesStoreService.findPendingEvaluations(idEvaluator);
+  }
+
   @Put(':id')
   update(
     @Param('id') id: string,
