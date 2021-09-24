@@ -15,26 +15,29 @@ export class ProjectService {
   ) {}
 
   async create(createProjectDto: CreateProjectDto): Promise<Project> {
-    const createdProject =  this.repository.create(
+    const createdProject = await this.repository.create(
       createProjectDto
     ); 
-    const savedProject =  this.repository.save(createdProject);
-    return savedProject;
+    return await this.repository.save(createdProject);
   }
 
-  findAll(): Promise<Project[]> {
+  async findAll(): Promise<Project[]> {
     return this.repository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} project`;
+  async findOne(id: string): Promise<Project> {
+    return await this.repository.findOne(id);
   }
 
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return `This action updates a #${id} project`;
+  async update(id: string, dto: UpdateProjectDto): Promise<Project> {
+    const project = await this.repository.findOne(id);
+    const merge = this.repository.merge(project, dto);
+    return await this.repository.save(merge);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} project`;
+  async remove(id: string): Promise<string>  {
+    const project = await this.repository.findOne(id);
+    this.repository.delete(project.idProject);
+    return `Project ${id} has been deleted`;
   }
 }
