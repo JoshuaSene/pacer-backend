@@ -10,6 +10,7 @@ O projeto consiste em criar um sistema de avaliações alunos durante um process
 - Lucas Magno de Andrade Bastos **(Developer)**
 - Jonathas Henrique de Moraes **(FullStack Developer)**
 - Raian Silva Damaceno **(Developer)**
+- Gustavo Joshua **(Developer)**
 - João Pedro Filipini **(Developer)**
 - Paulo Cesar Ferreira da Silva **(Developer)**
 
