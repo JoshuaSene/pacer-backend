@@ -15,7 +15,6 @@ export class TeamService {
   
   
   async create(createTeamDto: CreateTeamDto): Promise<Team>  {
-    console.log(createTeamDto)
     const team =  this.teamRepository.create(
       createTeamDto
     ); 

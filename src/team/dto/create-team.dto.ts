@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {IsString} from 'class-validator';
+import {IsString, IsUUID} from 'class-validator';
 
 export class CreateTeamDto { 
 
-    @IsString()
+    @IsUUID()
     @ApiProperty()
-    id_project: string;
+    idProject: string;
 
     @IsString()
     @ApiProperty()
