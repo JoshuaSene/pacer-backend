@@ -1,5 +1,6 @@
+import { LazyModuleLoader } from "@nestjs/core";
 import { Criteria } from "src/criteria/entities/criteria.entity";
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class NotesStore {
@@ -19,8 +20,16 @@ export class NotesStore {
     @Column({nullable:false, name: "id_criteria"})
     idCriteria   : string;
 
-    // @OneToMany(() => Criteria, (post: Post) => post.author)
-    // public posts: Post[];
+    @ManyToOne(() => Criteria, criterio => criterio.notes, {
+        eager: true,
+        onDelete: "RESTRICT",
+        nullable: false,
+        orphanedRowAction: "delete",
+        primary: false,
+        cascade: false,
+    })
+    @JoinColumn ( {  name : "id_criteria"  } ) 
+    criterio: Criteria;
 
     @Column({nullable:false, name: "id_sprint"})
     idSprint   : string;
