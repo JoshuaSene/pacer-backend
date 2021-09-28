@@ -22,22 +22,22 @@ export class CriteriaProjectService {
   
   
   async create(createCriteriaDto: CreateCriteriaProjectDto): Promise<CriteriaProject>  {
-    const criteria = this.criteriaRepository.findOne(createCriteriaDto.idCriteria);
+    const criteria = await this.criteriaRepository.findOne(createCriteriaDto.idCriteria);
 
     if(!criteria || criteria === null) {
       throw new NotFoundException(`Criteria with id ${createCriteriaDto.idCriteria} not found.`)
     }
 
-    const project = this.projectRepository.findOne(createCriteriaDto.idProject);
+    const project = await this.projectRepository.findOne(createCriteriaDto.idProject);
 
     if(!project || project === null) {
       throw new NotFoundException(`Project with id ${createCriteriaDto.idProject} not found.`)
     }
 
-    const createdCriteria =  this.repository.create(
+    const createdCriteria = this.repository.create(
       createCriteriaDto
     ); 
-    const criteriaSaved =  this.repository.save(createdCriteria);
+    const criteriaSaved = this.repository.save(createdCriteria);
     return criteriaSaved ;
   }
 
@@ -93,14 +93,14 @@ export class CriteriaProjectService {
       }
     });
     const merge = this.repository.merge(criteria, dto);
-    return  this.repository.save(merge);
+    return await this.repository.save(merge);
   }
 
   async delete(idCriteria: string, idProject: string) : Promise<string>  {
-    const projectCrit = this.repository.delete({
+    const projectCrit = await this.repository.delete({
       idCriteria: idCriteria,
       idProject: idProject
     });
-    return `CriteriaProject for project ${idProject} and criteria ${idCriteria} has been deleted`
+    return `CriteriaProject for project ${idProject} and criteria ${idCriteria} has been deleted`;
   }
 }
