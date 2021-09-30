@@ -1,4 +1,4 @@
-import { NotesStore } from "src/notes-store/entities/notes-store.entity";
+import { NotesStore } from "../../notes-store/entities/notes-store.entity";
 import { Entity, Column,  PrimaryGeneratedColumn, OneToMany } from "typeorm";
 
 @Entity({name:"criteria"})
