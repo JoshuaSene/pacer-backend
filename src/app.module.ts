@@ -12,9 +12,9 @@ import { SprintModule } from './sprint/sprint.module';
   imports: [TypeOrmModule.forRoot({
     type: 'mariadb',
     host: 'localhost',
-    port: 3309,
+    port: 3306,
     username: 'root',
-    password: '',
+    password: 'fatec',
     database: 'pacer',
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: false
