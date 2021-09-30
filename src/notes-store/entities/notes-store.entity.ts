@@ -1,6 +1,5 @@
-import { LazyModuleLoader } from "@nestjs/core";
-import { Criteria } from "src/criteria/entities/criteria.entity";
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Criteria } from "../../criteria/entities/criteria.entity";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class NotesStore {
