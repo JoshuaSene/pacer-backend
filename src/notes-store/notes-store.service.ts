@@ -27,7 +27,7 @@ export class NotesStoreService {
   }
 
   
- async find(id: string): Promise<NotesStore[]>  {
+  async find(id: string): Promise<NotesStore[]>  {
    const notes = await this.noteStoreRepository.find({
     
     idEvaluation: `${id}`
@@ -39,7 +39,22 @@ export class NotesStoreService {
    return notes
  }
 
- async update(id: string, updateNotesDto: UpdateNotesStoreDto): Promise<NotesStore> {
+ // Serviço para localizar avaliações pendentes para um avaliador.
+ async findPendingEvaluations(idEvaluator: string): Promise<NotesStore[]>  {
+  const notes = await this.noteStoreRepository.find({
+      where: { note: null
+             , idEvaluator: `${idEvaluator}` }
+    , order: { idEvaluated: "ASC"
+             , idSprint: "ASC"
+             , idCriteria: "ASC"}
+  }) 
+  if (notes.length == 0) {
+    throw new NotFoundException('There are no ratings for this rater');
+  }
+  return notes
+}
+
+async update(id: string, updateNotesDto: UpdateNotesStoreDto): Promise<NotesStore> {
   const notes: any = await this.noteStoreRepository.findOne(id);
   const mergeNotes = this.noteStoreRepository.merge(notes, updateNotesDto);
   return  this.noteStoreRepository.save(mergeNotes);

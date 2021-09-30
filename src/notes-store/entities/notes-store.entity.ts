@@ -1,5 +1,6 @@
+import { LazyModuleLoader } from "@nestjs/core";
 import { Criteria } from "src/criteria/entities/criteria.entity";
-import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class NotesStore {
@@ -19,13 +20,23 @@ export class NotesStore {
     @Column({nullable:false, name: "id_criteria"})
     idCriteria   : string;
 
-    // @OneToMany(() => Criteria, (post: Post) => post.author)
-    // public posts: Post[];
+    @ManyToOne(() => Criteria, criterio => criterio.notes, {
+        eager: true,
+        onDelete: "RESTRICT",
+        nullable: false,
+        orphanedRowAction: "delete",
+        primary: false,
+        cascade: false,
+    })
+    @JoinColumn ( {  name : "id_criteria"  } ) 
+    criterio: Criteria;
 
     @Column({nullable:false, name: "id_sprint"})
     idSprint   : string;
 
-    @Column({nullable:false, name: "note"})
+    // Marcos => A nota deverá iniciar como null, porque pode haver nota zero e 
+    // o null indicará que a nota ainda não foi aplicada
+    @Column({nullable: true, name: "note"}) 
     note: number;
    
     @Column({nullable: true, name: "obs", length:"800"})
