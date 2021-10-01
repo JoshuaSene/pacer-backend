@@ -13,9 +13,9 @@ import { TeamModule } from './team/team.module';
   imports: [TypeOrmModule.forRoot({
     type: 'mariadb',
     host: 'localhost',
-    port: 3306,
+    port: 3309,
     username: 'root',
-    password: 'fatec',
+    password: '',
     database: 'pacer',
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: false
