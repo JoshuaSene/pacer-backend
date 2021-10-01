@@ -1,23 +1,24 @@
 import { Criteria } from "../../criteria/entities/criteria.entity";
+
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class NotesStore {
 
     @PrimaryGeneratedColumn("uuid", {name: "id_evaluation"})
-    idEvaluation      : string;
+    idEvaluation: string;
 
     @Column({nullable:false, name: "id_evaluator"})
-    idEvaluator   : string;
+    idEvaluator: string;
 
     @Column({nullable:false, name: "id_evaluated"})
-    idEvaluated   : string;
+    idEvaluated: string;
 
     @Column({nullable:false, name: "id_group"})
-    idGroup   : string;
+    idGroup: string;
 
     @Column({nullable:false, name: "id_criteria"})
-    idCriteria   : string;
+    idCriteria: string;
 
     @ManyToOne(() => Criteria, criterio => criterio.notes, {
         eager: true,
@@ -31,10 +32,8 @@ export class NotesStore {
     criterio: Criteria;
 
     @Column({nullable:false, name: "id_sprint"})
-    idSprint   : string;
+    idSprint: string;
 
-    // Marcos => A nota deverá iniciar como null, porque pode haver nota zero e 
-    // o null indicará que a nota ainda não foi aplicada
     @Column({nullable: true, name: "note"}) 
     note: number;
    

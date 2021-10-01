@@ -1,15 +1,19 @@
-import { ApiProperty } from '@nestjs/swagger';
-import {IsDate, IsString} from 'class-validator';
+import {ApiProperty} from '@nestjs/swagger';
+import {IsString} from 'class-validator';
 
 export class CreateSprintDto { 
 
     @IsString()
     @ApiProperty()
-    initialDate: String;
+    initialDate: string;
 
     @IsString()
     @ApiProperty()
-    finalDate: String;
+    finalDate: string;
+
+    @IsString()
+    @ApiProperty()
+    idProject: string;
 
     private stringToDate(_date,_format,_delimiter)
     {
@@ -27,6 +31,7 @@ export class CreateSprintDto {
 
     public formatDates() {
         return {
+            idProject: this.idProject,
             initialDate: this.stringToDate(this.initialDate, "dd/MM/yyyy","/"),
             finalDate: this.stringToDate(this.finalDate, "dd/MM/yyyy","/")
         }
