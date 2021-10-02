@@ -4,8 +4,6 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Helper } from './../../commons/helper';
 
 export class CreateProjectDto {
-
-    //Add User id 
   
     @IsString()
     @ApiProperty()

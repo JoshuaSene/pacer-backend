@@ -7,11 +7,15 @@ export class CreateSprintDto {
 
     @IsString()
     @ApiProperty()
-    initialDate: String;
+    initialDate: string;
 
     @IsString()
     @ApiProperty()
-    finalDate: String;
+    finalDate: string;
+
+    @IsString()
+    @ApiProperty()
+    idProject: string;
 
     public formatDates() {
         return {
