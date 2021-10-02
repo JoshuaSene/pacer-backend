@@ -18,36 +18,30 @@ export class TeamService {
     const team =  this.teamRepository.create(
       createTeamDto
     ); 
-    const teamSaved =  this.teamRepository.save(team);
+    const teamSaved = this.teamRepository.save(team);
     return teamSaved ;
   }
 
- async findAll(): Promise<Team[]>  {
+  async findAll(): Promise<Team[]>  {
     return this.teamRepository.find();
   }
 
- async find(id: string, snAtivo: string): Promise<Team[]>  {
-   console.log(id, snAtivo)
-    const teams = await this.teamRepository.find({
-     
-      idTeam: `${id}`, 
-      snActivated: `${snAtivo}`,
-      
-    }) 
-    if (teams.length == 0) {
-      throw new NotFoundException('Team does not exists.');
+  async find(id: string): Promise<Team>  {
+    const team = await this.teamRepository.findOne(id) 
+    if (team === undefined) {
+      throw new NotFoundException(`Team with id ${id} does not exists.`);
     }
-    return teams
+    return team
   }
 
   async update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team> {
-    const Team: any = await this.teamRepository.findOne(id);
-    const mergeTeam = this.teamRepository.merge(Team, updateTeamDto);
-    return  this.teamRepository.save(mergeTeam);
+    const team: Team = await this.teamRepository.findOne(id);
+    const mergeTeam = this.teamRepository.merge(team, updateTeamDto);
+    return this.teamRepository.save(mergeTeam);
   }
 
   async delete(id: string) : Promise<string>  {
-  const projectCrit = this.teamRepository.delete(id)
-  return `id ${id} has been deleted`
+    this.teamRepository.delete(id)
+    return `id ${id} has been deleted`
   }
 }
