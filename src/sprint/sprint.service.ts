@@ -22,32 +22,29 @@ export class SprintService {
     return sprintSaved ;
   }
 
- async findAll(): Promise<Sprint[]>  {
+  async findAll(): Promise<Sprint[]>  {
     return this.sprintRepository.find();
   }
 
- async find(id: string, initialDate: Date): Promise<Sprint[]>  {
-    const sprints = await this.sprintRepository.find({
-     
-      idSprint: `${id}`, 
-      initialDate: `${initialDate}`,
-      
-    }) 
-    if (sprints.length == 0) {
-      throw new NotFoundException('Sprint does not exists.');
+  async find(id: string): Promise<Sprint>  {
+    const sprint = await this.sprintRepository.findOne(id) 
+
+    if(sprint === undefined) {
+      throw new NotFoundException(`Sprint with does not exist`);
     }
-    return sprints
+    
+    return sprint
   }
 
   async update(id: string, updateSprintDto: UpdateSprintDto): Promise<Sprint> {
-    const sprint: any = await this.sprintRepository.findOne(id);
-    const mergeSprint = this.sprintRepository.merge(sprint, updateSprintDto);
+    const sprint: Sprint = await this.sprintRepository.findOne(id);
+    const mergeSprint = this.sprintRepository.merge(sprint, updateSprintDto.formatDateFields());
+       
     return  this.sprintRepository.save(mergeSprint);
- 
   }
 
   async delete(id: string) : Promise<string>  {
-  const sprint = this.sprintRepository.delete(id)
-  return `Sprint id ${id} has been deleted`
+    this.sprintRepository.delete(id)
+    return `Sprint id ${id} has been deleted`
   }
 }

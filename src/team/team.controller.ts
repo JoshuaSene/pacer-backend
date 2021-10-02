@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body,Param, Delete, Query, Put } from '@nestjs/common'; 
+
+import { TeamService } from './team.service';
 import { Team } from './entities/team.entity';
 import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
-import { TeamService } from './team.service';
 
 @Controller('team')
 export class TeamController {
@@ -20,10 +21,9 @@ export class TeamController {
 
   @Get(':id')
   find(
-    @Param('id') id: string, 
-    @Query('snAtivo') snAtivo: string 
-    ): Promise<Team[]>  {
-    const team = this.teamService.find(id, snAtivo);
+    @Param('id') id: string
+    ): Promise<Team>  {
+    const team = this.teamService.find(id);
     return team;
   }
   
@@ -33,8 +33,7 @@ export class TeamController {
     @Body() updateTeamDto: UpdateTeamDto
     ):Promise<Team>  {
       return this.teamService.update(id, updateTeamDto);
-  }
-  
+  }  
 
   @Delete(':id')
   remove(@Param('id') id: string):Promise<String>  {

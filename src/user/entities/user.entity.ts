@@ -21,7 +21,8 @@ export class User {
     name: string;
 
     @Column({
-        nullable: false, 
+        nullable: false,
+        unique: true, 
         name: "document",
         length: 20
     })
@@ -29,6 +30,7 @@ export class User {
 
     @Column({
         nullable: false, 
+        unique: true,
         name: "email"
     })
     email: string;

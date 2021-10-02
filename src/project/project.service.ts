@@ -15,8 +15,8 @@ export class ProjectService {
   ) {}
 
   async create(createProjectDto: CreateProjectDto): Promise<Project> {
-    const createdProject = await this.repository.create(
-      createProjectDto
+    const createdProject: Project = this.repository.create(
+      createProjectDto.formatDates()
     ); 
     return await this.repository.save(createdProject);
   }

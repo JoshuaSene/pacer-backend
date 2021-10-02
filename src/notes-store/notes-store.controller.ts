@@ -20,10 +20,10 @@ export class NotesStoreController {
 
   @Get(':id')
   find(
-    @Param('id') id: string, 
-    ): Promise<NotesStore[]>  {
-    const criteria = this.notesStoreService.find(id);
-    return criteria;
+    @Param('id') id: string
+    ): Promise<NotesStore>  {
+    const note = this.notesStoreService.find(id);
+    return note;
   }
   
   @Get('pending/:idEvaluator')
@@ -41,7 +41,6 @@ export class NotesStoreController {
       return this.notesStoreService.update(id, updateProjectCriterionDto);
   }
   
-
   @Delete(':id')
   remove(@Param('id') id: string):Promise<String>  {
     return this.notesStoreService.delete(id);

@@ -1,3 +1,5 @@
+import { Helper } from './../../commons/helper';
+import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsString } from "class-validator";
 
@@ -23,7 +25,11 @@ export class CreateUserDto {
     @ApiProperty()
     rule: string;
 
-    @IsString()
+    @Optional()
     @ApiProperty()
     snAtivo: string;
+
+    public validate() {
+        this.snAtivo = Helper.isEmpty(this.snAtivo) ? 'N' : this.snAtivo;
+    }
 }
