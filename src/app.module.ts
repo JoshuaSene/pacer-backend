@@ -9,6 +9,8 @@ import { CriteriaModule } from './criteria/criteria.module';
 import { CriteriaProjectModule } from './criteria-project/criteria-project.module';
 import { SprintModule } from './sprint/sprint.module';
 import { TeamModule } from './team/team.module';
+import { RoleModule } from './role/role.module';
+import { UserRoleModule } from './user-role/user-role.module';
 
 @Module({  
   imports: [
@@ -17,7 +19,7 @@ import { TeamModule } from './team/team.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'fatec',
+      password: 'root',
       database: 'pacer',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false
@@ -28,7 +30,9 @@ import { TeamModule } from './team/team.module';
     NotesStoreModule, 
     SprintModule, 
     TeamModule,
-    UserModule
+    UserModule,
+    RoleModule,
+    UserRoleModule
   ], 
   controllers: [AppController],
   providers: [AppService],
