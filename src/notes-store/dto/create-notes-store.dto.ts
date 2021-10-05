@@ -1,6 +1,6 @@
 import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateNotesStoreDto {
 
@@ -24,7 +24,8 @@ export class CreateNotesStoreDto {
     @ApiProperty()
     idSprint: string;
 
-    @Optional()
+    @IsNumber()
+    @IsOptional()
     @ApiProperty()
     note: number;
 

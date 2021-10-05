@@ -1,43 +1,65 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
-import { User } from "./entities/user.entity";
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Role } from 'src/role/entities/role.entity';
+import { UserRole } from 'src/user-role/entities/user-role.entity';
+import { getConnection, getRepository, Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
-    
-    constructor(
-        @InjectRepository(User) 
-        private repository: Repository<User>,
-    ) {}
+  constructor(
+    @InjectRepository(User)
+    private repository: Repository<User>,
+  ) {}
 
-    async create(createuserDto: CreateUserDto): Promise<User> {
-        createuserDto.validate();
-        const createdUser = this.repository.create(
-            createuserDto
-        ); 
-        return await this.repository.save(createdUser);
+  async create(createuserDto: CreateUserDto): Promise<User> {
+    createuserDto.validate();
+    const createdUser = this.repository.create(createuserDto);
+
+    const selectUserRole = await getRepository(Role).findOne({
+      roleName: 'USER',
+    });
+    if (!selectUserRole) {
+      throw new NotFoundException(`USER role does not exist`);
     }
 
-    async findAll(): Promise<User[]> {
-        return this.repository.find();
+    const userSaved: User = await this.repository.save(createdUser);
+
+    const addRole = await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(UserRole)
+      .values({
+        idUser: () => `('${userSaved.idUser}')`,
+        idRole: selectUserRole,
+      })
+      .execute();
+    if (!addRole) {
+      throw new NotFoundException(`Failed to register role`);
     }
 
-    async findOne(id: string): Promise<User> {
-        return await this.repository.findOne(id);
-    }
+    return userSaved;
+  }
 
-    async update(id: string, dto: UpdateUserDto): Promise<User> {
-        const user = await this.repository.findOne(id);
-        const merge = this.repository.merge(user, dto);
-        return await this.repository.save(merge);
-    }
+  async findAll(): Promise<User[]> {
+    return this.repository.find();
+  }
 
-    async remove(id: string): Promise<string>  {
-        const user = await this.repository.findOne(id);
-        this.repository.delete(user.idUser);
-        return `User ${id} has been deleted`;
-    }
+  async findOne(id: string): Promise<User> {
+    return await this.repository.findOne(id);
+  }
+
+  async update(id: string, dto: UpdateUserDto): Promise<User> {
+    const user = await this.repository.findOne(id);
+    const merge = this.repository.merge(user, dto);
+    return await this.repository.save(merge);
+  }
+
+  async remove(id: string): Promise<string> {
+    const user = await this.repository.findOne(id);
+    this.repository.delete(user.idUser);
+    return `User ${id} has been deleted`;
+  }
 }
