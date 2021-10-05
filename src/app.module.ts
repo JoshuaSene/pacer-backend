@@ -8,6 +8,7 @@ import { CriteriaModule } from './criteria/criteria.module';
 import { CriteriaProjectModule } from './criteria-project/criteria-project.module';
 import { SprintModule } from './sprint/sprint.module';
 import { TeamModule } from './team/team.module';
+import { ProjectUserModule } from './project-user/project-user.module';
 
 @Module({  
   imports: [TypeOrmModule.forRoot({
@@ -19,7 +20,7 @@ import { TeamModule } from './team/team.module';
     database: 'pacer',
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: false
-  }), CriteriaModule, CriteriaProjectModule, ProjectModule, NotesStoreModule, SprintModule, TeamModule], 
+  }), CriteriaModule, CriteriaProjectModule, ProjectModule, NotesStoreModule, SprintModule, TeamModule, ProjectUserModule], 
   controllers: [AppController],
   providers: [AppService],
 })
