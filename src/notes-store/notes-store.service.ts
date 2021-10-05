@@ -18,6 +18,8 @@ export class NotesStoreService {
     const notes =  this.noteStoreRepository.create(
       createNotesStoreDto
     ); 
+    
+    console.log(notes)
     const notesStoreSaved =  this.noteStoreRepository.save(notes);
     return notesStoreSaved;
   }
