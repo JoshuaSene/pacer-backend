@@ -11,6 +11,7 @@ import { SprintModule } from './sprint/sprint.module';
 import { TeamModule } from './team/team.module';
 import { RoleModule } from './role/role.module';
 import { UserRoleModule } from './user-role/user-role.module';
+import { UserTeamModule } from './user-team/user-team.module';
 
 @Module({  
   imports: [
@@ -19,7 +20,7 @@ import { UserRoleModule } from './user-role/user-role.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'root',
+      password: 'fatec',
       database: 'pacer',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false
@@ -32,7 +33,8 @@ import { UserRoleModule } from './user-role/user-role.module';
     TeamModule,
     UserModule,
     RoleModule,
-    UserRoleModule
+    UserRoleModule,
+    UserTeamModule
   ], 
   controllers: [AppController],
   providers: [AppService],
