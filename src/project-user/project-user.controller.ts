@@ -22,15 +22,17 @@ export class ProjectUserController {
   findOne(
     @Query('idUser') idUser: string,
     @Query('idProject') idProject: string,
+    @Query('optional') optional: string,
     @Query('snActivated') snActivated: string
   ): Promise<ProjectUser> {
-    return this.projectUserService.find(idUser, idProject, snActivated);
+    return this.projectUserService.find(idUser, idProject, optional, snActivated);
   }
 
   @Get('find-many')
   findMany(
     @Query('snActivated') snActivated: string,
     @Query('idUser') idUser?: string,
+    @Query('optional') optional?: string,
     @Query('idProject') idProject?: string
   ): Promise<ProjectUser[]> {
     if(Helper.isEmpty(idUser) && Helper.isEmpty(idProject)) {
@@ -38,11 +40,11 @@ export class ProjectUserController {
     }
 
     if(Helper.isEmpty(idUser)) {
-      return this.projectUserService.findForUser(idUser, snActivated);
+      return this.projectUserService.findForUser(idUser, optional, snActivated);
     }
     
     if(Helper.isEmpty(idProject)) {
-      return this.projectUserService.findForProject(idProject, snActivated);
+      return this.projectUserService.findForProject(idProject, optional, snActivated);
     }
 
     throw new BadRequestException('You must provide idUser or idProject, not both.');

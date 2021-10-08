@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString, MaxLength } from "class-validator";
+import { IsString, MaxLength } from "class-validator";
 
 export class CreateProjectUserDto {
 
@@ -11,8 +11,9 @@ export class CreateProjectUserDto {
     @ApiProperty()
     idUser: string;
 
+    @IsString()
     @ApiProperty()
-    optional: boolean;
+    optional: string;
 
     @IsString()
     @MaxLength(1)

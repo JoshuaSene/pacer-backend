@@ -45,11 +45,12 @@ export class ProjectUserService {
     return this.repository.find();
   }
 
-  async find(idUser: string, idProject: string, snActivated: string): Promise<ProjectUser>  {
+  async find(idUser: string, idProject: string, optional: string, snActivated: string): Promise<ProjectUser>  {
     const projectUser = await this.repository.findOne({
       where: {
         idUser: `${idUser}`,
         idProject: `${idProject}`, 
+        optional: `${optional}`, 
         snActivated: `${snActivated}`
       }
     }) 
@@ -59,10 +60,11 @@ export class ProjectUserService {
     return projectUser
   }
 
-  async findForProject(idProject: string, snActivated: string): Promise<ProjectUser[]>  {
+  async findForProject(idProject: string, optional: string, snActivated: string): Promise<ProjectUser[]>  {
     const projects = await this.repository.find({
       where: {
-        idProject: `${idProject}`, 
+        idProject: `${idProject}`,
+        optional: `${optional}`, 
         snActivated: `${snActivated}`
       }
     }) 
@@ -72,10 +74,11 @@ export class ProjectUserService {
     return projects
   }
 
-  async findForUser(idUser: string, snActivated: string): Promise<ProjectUser[]>  {
+  async findForUser(idUser: string, optional: string, snActivated: string): Promise<ProjectUser[]>  {
     const users = await this.repository.find({
       where: {
         idUser: `${idUser}`,
+        optional: `${optional}`,
         snActivated: `${snActivated}`
       }
     }) 
