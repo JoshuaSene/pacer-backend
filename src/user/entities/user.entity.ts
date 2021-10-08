@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { UserRole } from "../../user-role/entities/user-role.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { NotesStore } from "../../notes-store/entities/notes-store.entity";
 
 @Entity({name:"user"})
 export class User {
@@ -21,7 +23,8 @@ export class User {
     name: string;
 
     @Column({
-        nullable: false, 
+        nullable: false,
+        unique: true, 
         name: "document",
         length: 20
     })
@@ -29,20 +32,32 @@ export class User {
 
     @Column({
         nullable: false, 
+        unique: true,
         name: "email"
     })
     email: string;
 
     @Column({
         nullable: false, 
-        name: "rule"
+        name: "role"
     })
-    rule: string;
+    role: string;
 
     @Column({
         nullable: false, 
         name: "sn_ativo", 
-        length:"1"
+        length:"1",
+        default: "S"
     })
     snAtivo: string;
+
+    @OneToMany(() => NotesStore, notesStore => notesStore.idEvaluated)
+    notesStoreEvaluated: NotesStore[]; 
+
+    @OneToMany(() => NotesStore, notesStore => notesStore.idEvaluator)
+    notesStoreEvaluator: NotesStore[]; 
+
+
+    @OneToMany(() => UserRole, userRole => userRole.idUser)
+    userRoles: UserRole[];  
 }

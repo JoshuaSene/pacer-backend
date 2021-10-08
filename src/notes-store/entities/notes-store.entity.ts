@@ -1,6 +1,8 @@
 import { Criteria } from "../../criteria/entities/criteria.entity";
 
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "../../user/entities/user.entity";
+import { Sprint } from "../../sprint/entities/sprint.entity";
 
 @Entity()
 export class NotesStore {
@@ -11,8 +13,31 @@ export class NotesStore {
     @Column({nullable:false, name: "id_evaluator"})
     idEvaluator: string;
 
+    @ManyToOne(() => User, user => user.idUser, {
+        eager: true,
+        onDelete: "RESTRICT",
+        nullable: false,
+        orphanedRowAction: "delete",
+        primary: false,
+        cascade: false,
+    })
+    @JoinColumn ( {  name : "id_evaluator"  } ) 
+    evaluator: User;
+
+
     @Column({nullable:false, name: "id_evaluated"})
     idEvaluated: string;
+
+    @ManyToOne(() => User, user => user.idUser, {
+        eager: true,
+        onDelete: "RESTRICT",
+        nullable: false,
+        orphanedRowAction: "delete",
+        primary: false,
+        cascade: false,
+    })
+    @JoinColumn ( {  name : "id_evaluated"  } ) 
+    evaluated: User;
 
     @Column({nullable:false, name: "id_group"})
     idGroup: string;
@@ -33,6 +58,17 @@ export class NotesStore {
 
     @Column({nullable:false, name: "id_sprint"})
     idSprint: string;
+
+    @ManyToOne(() => Sprint, sprint => sprint.idSprint, {
+        eager: true,
+        onDelete: "RESTRICT",
+        nullable: false,
+        orphanedRowAction: "delete",
+        primary: false,
+        cascade: false,
+    })
+    @JoinColumn ( {  name : "id_sprint"  } ) 
+    sprint: Sprint;
 
     @Column({nullable: true, name: "note"}) 
     note: number;

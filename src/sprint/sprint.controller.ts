@@ -20,10 +20,9 @@ export class SprintController {
 
   @Get(':id')
   find(
-    @Param('id') id: string, 
-    @Query('initialDate') initialDate: Date 
-    ): Promise<Sprint[]>  {
-    const sprint = this.sprintService.find(id, initialDate);
+    @Param('id') id: string
+    ): Promise<Sprint>  {
+    const sprint = this.sprintService.find(id);
     return sprint;
   }
   
