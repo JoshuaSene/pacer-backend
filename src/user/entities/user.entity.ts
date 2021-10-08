@@ -39,9 +39,9 @@ export class User {
 
     @Column({
         nullable: false, 
-        name: "rule"
+        name: "role"
     })
-    rule: string;
+    role: string;
 
     @Column({
         nullable: false, 

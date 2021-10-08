@@ -23,7 +23,7 @@ export class CreateUserDto {
 
     @IsString()
     @ApiProperty()
-    rule: string;
+    role: string;
 
     @Optional()
     @ApiProperty()
