@@ -18,11 +18,23 @@ export class UserTeam {
   @PrimaryColumn('uuid', {name: "id_team"})
   public idTeam: string;
 
-  @ManyToOne(() => User, (user: User) => user.idUser, {primary: true})
+  @ManyToOne(
+    () => User, 
+    (user: User) => user.idUser, 
+    {
+      primary: true,
+      eager: true
+    })
   @JoinColumn({ name: 'id_user' })
   public user!: User
 
-  @ManyToOne(() => Team, (team: Team) => team.idTeam, {primary: true})
+  @ManyToOne(
+    () => Team, 
+    (team: Team) => team.idTeam, 
+    {
+      primary: true,
+      eager: true
+    })
   @JoinColumn({ name: 'id_team' })
   public team!: Team
 
