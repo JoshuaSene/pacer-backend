@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Query } from '@nestjs/common';
 
 import { UserTeamService } from './user-team.service';
 import { UserTeam } from './entities/user-team.entity';
@@ -30,7 +30,7 @@ export class UserTeamController {
   update(
     @Query('idUser') idUser: string,
     @Query('idTeam') idTeam: string, 
-    @Body() updateUserTeamDto: UpdateUserTeamDto) {
+    @Body() updateUserTeamDto: UpdateUserTeamDto): Promise<UserTeam> {
     return this.userTeamService.update(idUser, idTeam, updateUserTeamDto);
   }
 
