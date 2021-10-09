@@ -15,16 +15,22 @@ export class UserService {
   ) {}
 
   async create(createuserDto: CreateUserDto): Promise<User> {
-    createuserDto.validate();
+    createuserDto.validate(); 
+    
+    if(createuserDto.role.toUpperCase() != 'USER'){
+      createuserDto.status = "pending"
+    }
     const createdUser = this.repository.create(createuserDto);
-
-    const selectUserRole = await getRepository(Role).findOne({
-      roleName: 'USER',
+    
+    var selectUserRole = await getRepository(Role).findOne({
+      roleName: createuserDto.role,
     });
+
     if (!selectUserRole) {
-      throw new NotFoundException(`USER role does not exist`);
+      throw new NotFoundException(`${createuserDto.role} role does not exist`);
     }
 
+ 
     const userSaved: User = await this.repository.save(createdUser);
 
     const addRole = await getConnection()
@@ -33,7 +39,7 @@ export class UserService {
       .into(UserRole)
       .values({
         idUser: () => `('${userSaved.idUser}')`,
-        idRole: selectUserRole,
+        idRole: () => `('${selectUserRole.idRole}')`,
       })
       .execute();
     if (!addRole) {
