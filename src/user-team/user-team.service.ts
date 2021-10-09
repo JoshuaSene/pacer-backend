@@ -40,6 +40,14 @@ export class UserTeamService {
     return saved;
   }
 
+  async find(teamId?: string): Promise<UserTeam[]> {
+    if(!teamId) {
+      return this.findAll();
+    }
+
+    return this.findByTeam(teamId);
+  }
+
   async findAll(): Promise<UserTeam[]> {
     return await this.repository.find();
   }
@@ -51,7 +59,19 @@ export class UserTeamService {
     });
 
     if(!found || found === null) {
-      throw new NotFoundException(`Could not find UserTeam with with user '${userId}' and Team '${teamId}'.`)
+      throw new NotFoundException(`Could not find UserTeam with user '${userId}' and Team '${teamId}'.`)
+    }
+
+    return found;
+  }
+
+  async findByTeam(teamId: string): Promise<UserTeam[]> {   
+    const found = await this.repository.find({
+      idTeam: teamId
+    });
+
+    if(!found || found === null) {
+      throw new NotFoundException(`Could not find UserTeam with Team '${teamId}'.`)
     }
 
     return found;
