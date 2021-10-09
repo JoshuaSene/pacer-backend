@@ -1,3 +1,4 @@
+import { UserApprovalDto } from './dto/user-approval-dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/role/entities/role.entity';
@@ -17,7 +18,7 @@ export class UserService {
   async create(createuserDto: CreateUserDto): Promise<User> {
     createuserDto.validate(); 
     
-    if(createuserDto.role.toUpperCase() != 'USER'){
+    if(createuserDto.role.toUpperCase() != 'USER') {
       createuserDto.status = "pending"
     }
     const createdUser = this.repository.create(createuserDto);
@@ -29,7 +30,6 @@ export class UserService {
     if (!selectUserRole) {
       throw new NotFoundException(`${createuserDto.role} role does not exist`);
     }
-
  
     const userSaved: User = await this.repository.save(createdUser);
 
@@ -47,6 +47,23 @@ export class UserService {
     }
 
     return userSaved;
+  }
+  
+  async approve(approvals: UserApprovalDto[]) {
+    approvals.forEach(async approval => {
+      const element = {
+        "status": approval.approved ? 'enabled' : 'disabled'
+      }
+
+      const user = await this.repository.findOne(approval.id);
+
+      if (!user) {
+        throw new NotFoundException(`Could not find user with id ${approval.id}`);
+      }
+
+      const merge = this.repository.merge(user, element);
+      this.repository.save(merge);
+    });
   }
 
   async findAll(): Promise<User[]> {

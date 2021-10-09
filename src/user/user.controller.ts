@@ -1,8 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+
+import { UserService } from "./user.service";
+import { User } from "./entities/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
-import { User } from "./entities/user.entity";
-import { UserService } from "./user.service";
+import { UserApprovalDto } from './dto/user-approval-dto';
 
 @Controller('user')
 export class UserController {
@@ -11,6 +13,11 @@ export class UserController {
   @Post()
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
+  }
+
+  @Post('approve')
+  approve(@Body() approvals: UserApprovalDto[]) {
+    return this.userService.approve(approvals);
   }
 
   @Get()
