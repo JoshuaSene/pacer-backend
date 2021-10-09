@@ -21,7 +21,7 @@ import { UserTeamModule } from './user-team/user-team.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'fatec',
+      password: 'root',
       database: 'pacer',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false

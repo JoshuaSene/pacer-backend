@@ -51,6 +51,15 @@ export class User {
     })
     snAtivo: string;
 
+    @Column({
+        nullable: false, 
+        name: "user_status", 
+        length:"8",
+        default: "enabled"
+    })
+    status: string;
+
+
     @OneToMany(() => NotesStore, notesStore => notesStore.idEvaluated)
     notesStoreEvaluated: NotesStore[]; 
 
