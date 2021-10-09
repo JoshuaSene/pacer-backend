@@ -15,15 +15,14 @@ export class UserTeamController {
   }
 
   @Get()
-  findAll(): Promise<UserTeam[]> {
-    return this.userTeamService.findAll();
+  findAll(@Query('idTeam') idTeam?: string): Promise<UserTeam[]> {
+    return this.userTeamService.find(idTeam);
   }
 
   @Get()
   findOne(
     @Query('idUser') idUser: string,
-    @Query('idTeam') idTeam: string
-  ) {
+    @Query('idTeam') idTeam: string): Promise<UserTeam> {
     return this.userTeamService.findOne(idUser, idTeam);
   }
 
