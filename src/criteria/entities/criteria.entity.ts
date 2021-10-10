@@ -1,8 +1,8 @@
-import { Entity, Column,  PrimaryGeneratedColumn, PrimaryColumn } from "typeorm";
+import { NotesStore } from "../../notes-store/entities/notes-store.entity";
+import { Entity, Column,  PrimaryGeneratedColumn, OneToMany } from "typeorm";
 
 @Entity({name:"criteria"})
 export class Criteria {
-  
   
     @PrimaryGeneratedColumn("uuid", {name: "id_criteria"})
     idCriteria      : string;
@@ -12,4 +12,7 @@ export class Criteria {
    
     @Column({nullable:false, name: "sn_ativo", length:"1"})
     snAtivo        : string;
+
+    @OneToMany(() => NotesStore, notes => notes.criterio)
+    notes: NotesStore[];    
 }

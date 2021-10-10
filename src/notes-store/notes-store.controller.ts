@@ -10,6 +10,7 @@ export class NotesStoreController {
 
   @Post()
   create(@Body() createNotesStoreDto: CreateNotesStoreDto) : Promise<NotesStore>{
+    console.log(createNotesStoreDto)
     return this.notesStoreService.create(createNotesStoreDto);
   }
 
@@ -20,12 +21,19 @@ export class NotesStoreController {
 
   @Get(':id')
   find(
-    @Param('id') id: string, 
-    ): Promise<NotesStore[]>  {
-    const criteria = this.notesStoreService.find(id);
-    return criteria;
+    @Param('id') id: string
+    ): Promise<NotesStore>  {
+    const note = this.notesStoreService.find(id);
+    return note;
   }
   
+  @Get('pending/:idEvaluator')
+  findPending(
+    @Param('idEvaluator') idEvaluator: string, 
+    ): Promise<NotesStore[]>  {
+    return this.notesStoreService.findPendingEvaluations(idEvaluator);
+  }
+
   @Put(':id')
   update(
     @Param('id') id: string,
@@ -34,7 +42,6 @@ export class NotesStoreController {
       return this.notesStoreService.update(id, updateProjectCriterionDto);
   }
   
-
   @Delete(':id')
   remove(@Param('id') id: string):Promise<String>  {
     return this.notesStoreService.delete(id);

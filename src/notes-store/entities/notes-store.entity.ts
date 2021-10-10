@@ -1,31 +1,76 @@
-import { Criteria } from "src/criteria/entities/criteria.entity";
-import { Column, Entity, OneToMany, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Criteria } from "../../criteria/entities/criteria.entity";
+
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "../../user/entities/user.entity";
+import { Sprint } from "../../sprint/entities/sprint.entity";
 
 @Entity()
 export class NotesStore {
 
     @PrimaryGeneratedColumn("uuid", {name: "id_evaluation"})
-    idEvaluation      : string;
+    idEvaluation: string;
 
     @Column({nullable:false, name: "id_evaluator"})
-    idEvaluator   : string;
+    idEvaluator: string;
+
+    @ManyToOne(() => User, user => user.idUser, {
+        eager: true,
+        onDelete: "RESTRICT",
+        nullable: false,
+        orphanedRowAction: "delete",
+        primary: false,
+        cascade: false,
+    })
+    @JoinColumn ( {  name : "id_evaluator"  } ) 
+    evaluator: User;
+
 
     @Column({nullable:false, name: "id_evaluated"})
-    idEvaluated   : string;
+    idEvaluated: string;
+
+    @ManyToOne(() => User, user => user.idUser, {
+        eager: true,
+        onDelete: "RESTRICT",
+        nullable: false,
+        orphanedRowAction: "delete",
+        primary: false,
+        cascade: false,
+    })
+    @JoinColumn ( {  name : "id_evaluated"  } ) 
+    evaluated: User;
 
     @Column({nullable:false, name: "id_group"})
-    idGroup   : string;
+    idGroup: string;
 
     @Column({nullable:false, name: "id_criteria"})
-    idCriteria   : string;
+    idCriteria: string;
 
-    // @OneToMany(() => Criteria, (post: Post) => post.author)
-    // public posts: Post[];
+    @ManyToOne(() => Criteria, criterio => criterio.notes, {
+        eager: true,
+        onDelete: "RESTRICT",
+        nullable: false,
+        orphanedRowAction: "delete",
+        primary: false,
+        cascade: false,
+    })
+    @JoinColumn ( {  name : "id_criteria"  } ) 
+    criterio: Criteria;
 
     @Column({nullable:false, name: "id_sprint"})
-    idSprint   : string;
+    idSprint: string;
 
-    @Column({nullable:false, name: "note"})
+    @ManyToOne(() => Sprint, sprint => sprint.idSprint, {
+        eager: true,
+        onDelete: "RESTRICT",
+        nullable: false,
+        orphanedRowAction: "delete",
+        primary: false,
+        cascade: false,
+    })
+    @JoinColumn ( {  name : "id_sprint"  } ) 
+    sprint: Sprint;
+
+    @Column({nullable: true, name: "note"}) 
     note: number;
    
     @Column({nullable: true, name: "obs", length:"800"})
