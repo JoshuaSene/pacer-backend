@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
 -- Comando para desabilitar o modo de segurança e permitir exclusões e alterações gerais.
-=======
--- Comando para desabilitar o modo de seguranÃ§a e permitir exclusÃµes e alteraÃ§Ãµes gerais.
->>>>>>> Stashed changes
 USE PACER;
 
 SET SQL_SAFE_UPDATES = 0;
@@ -20,11 +16,7 @@ commit;
 insert into user (id_user, login, nome, document, email, role, sn_ativo) values ('11','PROJOSE' ,'José' ,''            ,'jose@fatec-pacer.sp.gov.br' ,'PROFESSOR','S');
 insert into user (id_user, login, nome, document, email, role, sn_ativo) values ('12','PROMARIA','Maria','2345'        ,'maria@fatec-pacer.sp.gov.br','PROFESSOR','S');
 insert into user (id_user, login, nome, document, email, role, sn_ativo) values ('22','BD1234'  ,'Antônio' ,'141414141414','antonio@fatec-pacer.sp.gov.br','ALUNO'    ,'S');
-<<<<<<< Updated upstream
-insert into user (id_user, login, nome, document, email, role, sn_ativo) values ('33','BD1234'  ,'Benedita','232323232323','benedita@fatec-pacer.sp.gov.br','ALUNO'    ,'S');
-=======
 insert into user (id_user, login, nome, document, email, role, sn_ativo) values ('33','BD3456'  ,'Benedita','232323232323','benedita@fatec-pacer.sp.gov.br','ALUNO'    ,'S');
->>>>>>> Stashed changes
 commit;
 
 -- USER USER_ROLE
