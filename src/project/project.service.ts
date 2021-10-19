@@ -18,26 +18,26 @@ export class ProjectService {
     const createdProject: Project = this.repository.create(
       createProjectDto.formatDates()
     ); 
-    return await this.repository.save(createdProject);
+    return await this.repository.save(createdProject); 
   }
 
   async findAll(): Promise<Project[]> {
-    return this.repository.find();
+    return this.repository.find(); 
   }
 
   async findOne(id: string): Promise<Project> {
-    return await this.repository.findOne(id);
+    return await this.repository.findOne(id); 
   }
 
   async update(id: string, dto: UpdateProjectDto): Promise<Project> {
     const project = await this.repository.findOne(id);
     const merge = this.repository.merge(project, dto);
-    return await this.repository.save(merge);
+    return await this.repository.save(merge); 
   }
 
   async remove(id: string): Promise<string>  {
     const project = await this.repository.findOne(id);
     this.repository.delete(project.idProject);
-    return `Project ${id} has been deleted`;
+    return `Project ${id} has been deleted`; 
   }
 }
