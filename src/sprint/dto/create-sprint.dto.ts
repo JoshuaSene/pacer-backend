@@ -19,6 +19,7 @@ export class CreateSprintDto {
 
     public formatDates() {
         return {
+            idProject: this.idProject,
             initialDate: Helper.stringToDate(this.initialDate, "dd/MM/yyyy","/"),
             finalDate: Helper.stringToDate(this.finalDate, "dd/MM/yyyy","/")
         }
