@@ -15,23 +15,23 @@ export class ProjectController {
 
   @Get()
   findAll(): Promise<Project[]> {
-    return this.projectService.findAll();
+    return this.projectService.findAll(); 
   }
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Project> {
-    return this.projectService.findOne(id);
+    return this.projectService.findOne(id); 
   }
 
   @Patch(':id')
   update(
     @Param('id') id: string, 
     @Body() updateProjectDto: UpdateProjectDto): Promise<Project> {
-    return this.projectService.update(id, updateProjectDto);
+    return this.projectService.update(id, updateProjectDto); 
   }
 
   @Delete(':id')
   remove(@Param('id') id: string): Promise<String> {
-    return this.projectService.remove(id);
+    return this.projectService.remove(id); 
   }
 }
