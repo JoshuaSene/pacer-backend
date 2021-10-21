@@ -34,13 +34,13 @@ O projeto consiste em criar um sistema de avaliações alunos durante um process
 - Cadastrar equipes
 - Cadastrar sprints
 - Cadastrar Usuários
-- Exibir pendências por parte do avaliador
 - Modificar nota antes do fim da Sprint
 
 ##### 3ª Sprint
 
 - Gerar relatórios (graficos)
 - Sistema de Login
+- Exibir pendências por parte do avaliador
 
 ##### 4ª Sprint
 
