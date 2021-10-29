@@ -1,6 +1,14 @@
-import { UserRole } from "../../user-role/entities/user-role.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { hashSync } from 'bcrypt';
+import { 
+    BeforeInsert,
+    Column, 
+    Entity, 
+    OneToMany, 
+    PrimaryGeneratedColumn 
+} from "typeorm";
+
 import { NotesStore } from "../../notes-store/entities/notes-store.entity";
+import { UserRole } from "../../user-role/entities/user-role.entity";
 
 @Entity({name:"user"})
 export class User {
@@ -59,6 +67,8 @@ export class User {
     })
     status: string;
 
+    @Column()
+    password: string;
 
     @OneToMany(() => NotesStore, notesStore => notesStore.idEvaluated)
     notesStoreEvaluated: NotesStore[]; 
@@ -66,7 +76,11 @@ export class User {
     @OneToMany(() => NotesStore, notesStore => notesStore.idEvaluator)
     notesStoreEvaluator: NotesStore[]; 
 
-
     @OneToMany(() => UserRole, userRole => userRole.idUser)
     userRoles: UserRole[];  
+
+    @BeforeInsert()
+    hashPassword() {
+        this.password = hashSync(this.password, 10);
+    }
 }

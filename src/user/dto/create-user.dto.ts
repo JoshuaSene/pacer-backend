@@ -29,6 +29,10 @@ export class CreateUserDto {
     @IsEmpty()
     status: string;
 
+    @IsString()
+    @ApiProperty()
+    password: string;
+
     @Optional()
     @ApiProperty()
     snAtivo: string;
