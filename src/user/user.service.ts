@@ -15,9 +15,7 @@ export class UserService {
     private repository: Repository<User>,
   ) {}
 
-  async create(createuserDto: CreateUserDto): Promise<User> {
-    createuserDto.validate(); 
-    
+  async create(createuserDto: CreateUserDto): Promise<User> {    
     if(createuserDto.role.toUpperCase() != 'USER') {
       createuserDto.status = "pending"
     }
@@ -75,7 +73,7 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    const user = this.repository.findOne({
+    const user = await this.repository.findOne({
       where: {
         email: `${email}`
       }
@@ -87,7 +85,7 @@ export class UserService {
   }
 
   async findByDocument(document: string): Promise<User> {
-    const user = this.repository.findOne({
+    const user = await this.repository.findOne({
       where: {
         document: `${document}`
       }
@@ -99,7 +97,7 @@ export class UserService {
   }
 
   async findByLogin(login: string): Promise<User> {
-    const user = this.repository.findOne({
+    const user = await this.repository.findOne({
       where: {
         login: `${login}`
       }
