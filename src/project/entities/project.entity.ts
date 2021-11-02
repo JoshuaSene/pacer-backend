@@ -6,8 +6,6 @@ export class Project {
 
     @PrimaryGeneratedColumn('uuid', {name: "id_project"})
     idProject: string;
-
-    //Add User id 
   
     @Column({nullable: false})
     description: string;
@@ -18,6 +16,9 @@ export class Project {
     @Column({nullable: false, name: "dt_close", type: 'date'})
     closeDate: Date;
 
-    @OneToMany('Team', (team: Team) => team.project)
+    @OneToMany('Team', 
+        (team: Team) => team.project, 
+        { eager: true }
+    )
     teams: Team[]
 }
