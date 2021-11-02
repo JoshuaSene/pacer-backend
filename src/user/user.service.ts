@@ -15,9 +15,7 @@ export class UserService {
     private repository: Repository<User>,
   ) {}
 
-  async create(createuserDto: CreateUserDto): Promise<User> {
-    createuserDto.validate(); 
-    
+  async create(createuserDto: CreateUserDto): Promise<User> {    
     if(createuserDto.role.toUpperCase() != 'USER') {
       createuserDto.status = "pending"
     }
@@ -74,14 +72,56 @@ export class UserService {
     return await this.repository.findOne(id);
   }
 
+  async findByEmail(email: string): Promise<User> {
+    const user = await this.repository.findOne({
+      where: {
+        email: `${email}`
+      }
+    });
+    if (!user) {
+      throw new NotFoundException(`Could not find user with email ${email}`);
+    }
+    return user;
+  }
+
+  async findByDocument(document: string): Promise<User> {
+    const user = await this.repository.findOne({
+      where: {
+        document: `${document}`
+      }
+    });
+    if (!user) {
+      throw new NotFoundException(`Could not find user with document ${document}`);
+    }
+    return user;
+  }
+
+  async findByLogin(login: string): Promise<User> {
+    const user = await this.repository.findOne({
+      where: {
+        login: `${login}`
+      }
+    });
+    if (!user) {
+      throw new NotFoundException(`Could not find user with login ${login}`);
+    }
+    return user;
+  }
+
   async update(id: string, dto: UpdateUserDto): Promise<User> {
     const user = await this.repository.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`Could not find user with id ${id}`);
+    }
     const merge = this.repository.merge(user, dto);
     return await this.repository.save(merge);
   }
 
   async remove(id: string): Promise<string> {
     const user = await this.repository.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`Could not find user with id ${id}`);
+    }
     this.repository.delete(user.idUser);
     return `User ${id} has been deleted`;
   }
