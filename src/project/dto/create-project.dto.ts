@@ -17,11 +17,16 @@ export class CreateProjectDto {
     @ApiProperty()
     closeDate: string;
 
+    @IsString()
+    @ApiProperty()
+    evaluationFormat: string;
+
     public formatDates() {
         return {
             description: this.description,
             openingDate: Helper.stringToDate(this.openingDate, "dd/MM/yyyy","/"),
-            closeDate: Helper.stringToDate(this.closeDate, "dd/MM/yyyy","/")
+            closeDate: Helper.stringToDate(this.closeDate, "dd/MM/yyyy","/"),
+            evaluationFormat: this.evaluationFormat
         }
     }
 }
