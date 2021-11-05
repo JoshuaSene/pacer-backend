@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Query, Param } from '@nestjs/common';
 
 import { UserTeamService } from './user-team.service';
 import { UserTeam } from './entities/user-team.entity';
@@ -13,6 +13,14 @@ export class UserTeamController {
   create(@Body() createUserTeamDto: CreateUserTeamDto): Promise<UserTeam> {
     return this.userTeamService.create(createUserTeamDto);
   }
+ 
+  @Post('become-active')
+  becomeActive(
+    @Body('userId') userId: string, 
+    ):Promise<UserTeam>  {
+      return this.userTeamService.enabledSM(userId);
+  }
+  
 
   @Get()
   findAll(@Query('idTeam') idTeam?: string): Promise<UserTeam[]> {
