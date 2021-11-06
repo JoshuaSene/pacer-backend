@@ -16,6 +16,12 @@ export class Project {
     @Column({nullable: false, name: "dt_close", type: 'date'})
     closeDate: Date;
 
+    //Será preenchido com:
+    //T=>Todos avaliam todos
+    //U=>Um colega avalia o outro
+    @Column({nullable: false, name: "eval_format", length:"1"})
+    evaluationFormat: string;
+
     @OneToMany('Team', 
         (team: Team) => team.project, 
         { eager: true }
