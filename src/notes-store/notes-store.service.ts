@@ -15,12 +15,11 @@ export class NotesStoreService {
   ) {}
 
   async create(createNotesStoreDto: CreateNotesStoreDto): Promise<NotesStore>  {
-    const notes =  this.noteStoreRepository.create(
+    const notes = this.noteStoreRepository.create(
       createNotesStoreDto
     ); 
     
-    console.log(notes)
-    const notesStoreSaved =  this.noteStoreRepository.save(notes);
+    const notesStoreSaved = this.noteStoreRepository.save(notes);
     return notesStoreSaved;
   }
 
