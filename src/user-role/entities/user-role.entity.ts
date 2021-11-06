@@ -7,8 +7,7 @@ import { Role } from "../../role/entities/role.entity";
 export class UserRole {
 
     @PrimaryGeneratedColumn('uuid', {name: "id_user_role"})
-    idUserRole: string;
- 
+    idUserRole: string; 
 
     @ManyToOne(() => User, user => user.idUser, {
         eager: true,
@@ -20,7 +19,6 @@ export class UserRole {
     })
     @JoinColumn ( {  name : "id_user"  } ) 
     idUser: User;
-
     
     @ManyToOne(() => Role, role => role.idRole, {
         eager: true,
@@ -37,7 +35,5 @@ export class UserRole {
     created_at: Date;
 
     @UpdateDateColumn()
-    updated_at: Date;
-     
- 
+    updated_at: Date;   
 }
