@@ -6,8 +6,6 @@ export class Project {
 
     @PrimaryGeneratedColumn('uuid', {name: "id_project"})
     idProject: string;
-
-    //Add User id 
   
     @Column({nullable: false})
     description: string;
@@ -24,6 +22,9 @@ export class Project {
     @Column({nullable: false, name: "eval_format", length:"1"})
     evaluationFormat: string;
 
-    @OneToMany('Team', (team: Team) => team.project)
+    @OneToMany('Team', 
+        (team: Team) => team.project, 
+        { eager: true }
+    )
     teams: Team[]
 }
