@@ -14,8 +14,8 @@ export class UserTeamController {
     return this.userTeamService.create(createUserTeamDto);
   }
  
-  @Post('become-active')
-  becomeActive(
+  @Post('enable-sm')
+  enabledSM(
     @Body('userId') userId: string, 
     ):Promise<UserTeam>  {
       return this.userTeamService.enabledSM(userId);
