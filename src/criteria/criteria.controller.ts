@@ -35,7 +35,6 @@ export class CriteriaController {
       return this.projectCriteriaService.update(id, updateProjectCriterionDto);
   }
   
-
   @Delete(':id')
   remove(@Param('id') id: string):Promise<String>  {
     return this.projectCriteriaService.delete(id);
