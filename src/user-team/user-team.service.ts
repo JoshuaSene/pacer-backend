@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { getConnection, getRepository, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
@@ -108,4 +108,31 @@ export class UserTeamService {
 
     return `UserTeam with with user '${userId}' and Team '${teamId}' deleted successfully!`;
   }
+
+  async enabledSM(userId: string): Promise<UserTeam> { 
+    const userTeam = await this.repository.findOne({
+      idUser: userId
+    });
+ 
+    const newStatus = {
+      isScrumMaster: true
+    }
+
+    const mergeUserStatus = getRepository(UserTeam).merge(userTeam, newStatus)
+ 
+ 
+    const team = await this.teamRepository.findOne(userTeam.idTeam)
+
+    const newStatusActive = {
+      isActive: true
+    }
+
+    const mergeTeamStatus = getRepository(Team).merge( team, newStatusActive)
+ 
+    await getRepository(Team).save(mergeTeamStatus);
+
+ 
+    return   await getRepository(UserTeam).save(mergeUserStatus);
+  }
+ 
 }
