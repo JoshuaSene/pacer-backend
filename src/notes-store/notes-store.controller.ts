@@ -10,7 +10,6 @@ export class NotesStoreController {
 
   @Post()
   create(@Body() createNotesStoreDto: CreateNotesStoreDto) : Promise<NotesStore>{
-    console.log(createNotesStoreDto)
     return this.notesStoreService.create(createNotesStoreDto);
   }
 

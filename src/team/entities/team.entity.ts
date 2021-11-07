@@ -20,4 +20,7 @@ export class Team {
     @Column({nullable:false, name: "sn_Activated", length:"1"})
     snActivated        : string;
 
+    @Column({nullable: false, name: "is_active", default: false})
+    public isActive: Boolean
+
 }
