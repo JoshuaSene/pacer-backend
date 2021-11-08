@@ -1,18 +1,20 @@
-import { UserModule } from './user/user.module';
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { NotesStoreModule } from './notes-store/notes-store.module';
+
+import { AppService } from './app.service';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { TeamModule } from './team/team.module';
+import { RoleModule } from './role/role.module';
 import { AppController } from './app.controller';
+import { SprintModule } from './sprint/sprint.module';
 import { ProjectModule } from './project/project.module';
 import { CriteriaModule } from './criteria/criteria.module';
-import { CriteriaProjectModule } from './criteria-project/criteria-project.module';
-import { SprintModule } from './sprint/sprint.module';
-import { TeamModule } from './team/team.module';
-import { ProjectUserModule } from './project-user/project-user.module';
-import { RoleModule } from './role/role.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { UserTeamModule } from './user-team/user-team.module';
+import { NotesStoreModule } from './notes-store/notes-store.module';
+import { ProjectUserModule } from './project-user/project-user.module';
+import { CriteriaProjectModule } from './criteria-project/criteria-project.module';
 
 @Module({  
   imports: [
@@ -26,9 +28,11 @@ import { UserTeamModule } from './user-team/user-team.module';
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false
     }), 
+    AuthModule,
     CriteriaModule, 
     CriteriaProjectModule, 
     ProjectModule, 
+    ProjectUserModule,
     NotesStoreModule, 
     SprintModule, 
     TeamModule,

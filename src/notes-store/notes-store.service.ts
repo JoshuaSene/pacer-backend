@@ -15,12 +15,11 @@ export class NotesStoreService {
   ) {}
 
   async create(createNotesStoreDto: CreateNotesStoreDto): Promise<NotesStore>  {
-    const notes =  this.noteStoreRepository.create(
+    const notes = this.noteStoreRepository.create(
       createNotesStoreDto
     ); 
     
-    console.log(notes)
-    const notesStoreSaved =  this.noteStoreRepository.save(notes);
+    const notesStoreSaved = this.noteStoreRepository.save(notes);
     return notesStoreSaved;
   }
 
@@ -37,24 +36,34 @@ export class NotesStoreService {
     return note
   }
 
-  async findPendingEvaluations(idEvaluator: string): Promise<NotesStore[]>  {
+  async findPendingEvaluations(idEvaluator: string, idSprint: string): Promise<NotesStore[]>  {
     const notes = await this.noteStoreRepository.find({
       where: { 
         note: null, 
-        idEvaluator: `${idEvaluator}` 
-      }, 
-      order: { 
-        idEvaluated: "ASC", 
-        idSprint: "ASC", 
-        idCriteria: "ASC"
+        idEvaluator: `${idEvaluator}` ,
+        idSprint: `${idSprint}`
       }
     }) 
     if (notes.length === 0 || notes === undefined) {
-      throw new NotFoundException('There are no ratings for this rater');
+      throw new NotFoundException(`There are no pending evaluations for this id ${idEvaluator}`)
     }
     return notes
   }
 
+  async findAllPendingEvaluations(idSprint: string): Promise<NotesStore[]>  {
+    const notes = await this.noteStoreRepository.find({
+      where: { 
+        note: null,
+        idSprint: `${idSprint}`
+      }
+    }) 
+    if (notes.length === 0 || notes === undefined) {
+      throw new NotFoundException('There are no pending evaluations');
+    }
+    return notes
+  }
+
+  
   async update(id: string, updateNotesDto: UpdateNotesStoreDto): Promise<NotesStore> {
     const notes: any = await this.noteStoreRepository.findOne(id);
     const mergeNotes = this.noteStoreRepository.merge(notes, updateNotesDto);
