@@ -1,4 +1,3 @@
-import { CreateNotesStoreDto } from './../notes-store/dto/create-notes-store.dto';
 import { Repository } from 'typeorm'; 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -10,6 +9,7 @@ import { UpdateSprintDto } from './dto/update-sprint.dto';
 import { Project } from 'src/project/entities/project.entity';
 import { UserTeam } from './../user-team/entities/user-team.entity';
 import { NotesStore } from './../notes-store/entities/notes-store.entity';
+import { CreateNotesStoreDto } from './../notes-store/dto/create-notes-store.dto';
 import { CriteriaProject } from './../criteria-project/entities/criteria-project.entity';
 
 @Injectable()
@@ -27,8 +27,7 @@ export class SprintService {
     @InjectRepository(Project) 
     private projectRepository: Repository<Project>
   ) {}
-Project  
-p 
+
   async create(createSprintDto: CreateSprintDto): Promise<Sprint>  {
     const sprint =  this.sprintRepository.create(
       createSprintDto.formatDates()
@@ -47,8 +46,8 @@ p
   async find(id: string): Promise<Sprint>  {
     const sprint = await this.sprintRepository.findOne(id) 
 
-    if(sprint === undefined) {
-      throw new NotFoundException(`Sprint with does not exist`);
+    if(!sprint || sprint === undefined) {
+      throw new NotFoundException(`Sprint with id ${id} does not exist`);
     }
     
     return sprint
@@ -56,8 +55,12 @@ p
 
   async update(id: string, updateSprintDto: UpdateSprintDto): Promise<Sprint> {
     const sprint: Sprint = await this.sprintRepository.findOne(id);
+
+    if(!sprint || sprint === undefined) {
+      throw new NotFoundException(`Sprint with id ${id} does not exist`);
+    }
+    
     const mergeSprint = this.sprintRepository.merge(sprint, updateSprintDto.formatDateFields());
-       
     return  this.sprintRepository.save(mergeSprint);
   }
 

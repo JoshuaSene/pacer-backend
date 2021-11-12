@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TeamModule } from './team/team.module';
 import { RoleModule } from './role/role.module';
-import { AppController } from './app.controller';
 import { SprintModule } from './sprint/sprint.module';
 import { ProjectModule } from './project/project.module';
 import { CriteriaModule } from './criteria/criteria.module';
@@ -41,7 +39,7 @@ import { CriteriaProjectModule } from './criteria-project/criteria-project.modul
     UserRoleModule,
     UserTeamModule
   ], 
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
