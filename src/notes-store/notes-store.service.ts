@@ -11,7 +11,7 @@ export class NotesStoreService {
 
   constructor( 
     @InjectRepository(NotesStore) 
-    private noteStoreRepository: Repository<NotesStore>,
+    private noteStoreRepository: Repository<NotesStore>
   ) {}
 
   async create(createNotesStoreDto: CreateNotesStoreDto): Promise<NotesStore>  {
@@ -28,12 +28,13 @@ export class NotesStoreService {
   }
   
   async find(id: string): Promise<NotesStore>  {
-    const note: NotesStore = await this.noteStoreRepository.findOne(id) 
+    const note: NotesStore = await this.noteStoreRepository.findOne(id); 
    
-    if (note === undefined) {
-     throw new NotFoundException('Avaliation does not exists.');
+    if (!note || note === undefined) {
+      throw new NotFoundException(`Evaluation with id ${id} does not exists.`);
     }
-    return note
+
+    return note;
   }
 
   async findPendingEvaluations(idEvaluator: string, idSprint: string): Promise<NotesStore[]>  {
@@ -43,11 +44,13 @@ export class NotesStoreService {
         idEvaluator: `${idEvaluator}` ,
         idSprint: `${idSprint}`
       }
-    }) 
-    if (notes.length === 0 || notes === undefined) {
+    });
+
+    if (!notes || notes.length === 0 || notes === undefined) {
       throw new NotFoundException(`There are no pending evaluations for this id ${idEvaluator}`)
     }
-    return notes
+
+    return notes;
   }
 
   async findAllPendingEvaluations(idSprint: string): Promise<NotesStore[]>  {
@@ -56,22 +59,39 @@ export class NotesStoreService {
         note: null,
         idSprint: `${idSprint}`
       }
-    }) 
-    if (notes.length === 0 || notes === undefined) {
+    });
+
+    if (!notes || notes.length === 0 || notes === undefined) {
       throw new NotFoundException('There are no pending evaluations');
     }
-    return notes
+    
+    return notes;
   }
 
   
   async update(id: string, updateNotesDto: UpdateNotesStoreDto): Promise<NotesStore> {
-    const notes: any = await this.noteStoreRepository.findOne(id);
-    const mergeNotes = this.noteStoreRepository.merge(notes, updateNotesDto);
+    const note: NotesStore = await this.noteStoreRepository.findOne(id);
+
+    if (!note || note === undefined) {
+      throw new NotFoundException(`Evaluation with id ${id} does not exists.`);
+    }
+
+    const mergeNotes = this.noteStoreRepository.merge(note, updateNotesDto);
     return  this.noteStoreRepository.save(mergeNotes);
   }
 
   async delete(id: string) : Promise<string> { 
-    this.noteStoreRepository.delete(id)
-    return `Note ${id} has been deleted`  
+    const note: NotesStore = await this.noteStoreRepository.findOne(id);
+
+    if (!note || note === undefined) {
+      throw new NotFoundException(`Evaluation with id ${id} does not exists.`);
+    }
+
+    try {
+      this.noteStoreRepository.delete(note);
+      return `Note ${id} has been deleted`; 
+    } catch (error) {
+      throw new Error(`Error Deleting Note! \nMessage: ${error}`);
+    }
   }
 }

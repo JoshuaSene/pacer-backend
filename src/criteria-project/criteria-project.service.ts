@@ -17,7 +17,7 @@ export class CriteriaProjectService {
     @InjectRepository(Criteria) 
     private criteriaRepository: Repository<Criteria>,
     @InjectRepository(Project) 
-    private projectRepository: Repository<Project>,
+    private projectRepository: Repository<Project>
   ) {}
   
   
@@ -66,7 +66,7 @@ export class CriteriaProjectService {
         snActivated: `${snActivated}`
       }
     }) 
-    if (criterias.length == 0) {
+    if (!criterias || criterias.length == 0) {
       throw new NotFoundException(`CriteriaProject does not exists for project: ${idProject}.`);
     }
     return criterias
@@ -79,28 +79,46 @@ export class CriteriaProjectService {
         snActivated: `${snActivated}`
       }
     }) 
-    if (criterias.length == 0) {
+
+    if (!criterias || criterias.length == 0) {
       throw new NotFoundException(`CriteriaProject does not exists for criteria: ${idCriteria}.`);
     }
     return criterias
   }
 
   async update(idCriteria: string, idProject: string, dto: UpdateCriteriaProjectDto): Promise<CriteriaProject> {
-    const criteria: any = await this.repository.findOne({
+    const criteria: CriteriaProject = await this.repository.findOne({
       where: {
         idCriteria: `${idCriteria}`, 
         idProject: `${idProject}`
       }
     });
+
+    if (!criteria) {
+      throw new NotFoundException(`CriteriaProject does not exists for project: ${idProject} and criteria: ${idCriteria}.`);
+    }
+
     const merge = this.repository.merge(criteria, dto);
     return  this.repository.save(merge);
   }
 
   async delete(idCriteria: string, idProject: string) : Promise<string>  {
-    const projectCrit = this.repository.delete({
-      idCriteria: idCriteria,
-      idProject: idProject
+    const criteria: CriteriaProject = await this.repository.findOne({
+      where: {
+        idCriteria: `${idCriteria}`, 
+        idProject: `${idProject}`
+      }
     });
-    return `CriteriaProject for project ${idProject} and criteria ${idCriteria} has been deleted`
+
+    if (!criteria) {
+      throw new NotFoundException(`CriteriaProject does not exists for project: ${idProject} and criteria: ${idCriteria}.`);
+    }
+
+    try {
+      this.repository.delete(criteria);
+      return `CriteriaProject for project ${idProject} and criteria ${idCriteria} has been deleted`
+    } catch (error) {
+      throw new Error(`Error Deleting CriteriaProject! \nMessage: ${error}`);
+    }
   }
 }
