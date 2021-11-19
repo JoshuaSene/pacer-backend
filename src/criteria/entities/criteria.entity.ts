@@ -7,9 +7,12 @@ export class Criteria {
     @PrimaryGeneratedColumn("uuid", {name: "id_criteria"})
     idCriteria      : string;
 
-    @Column({nullable:false, name: "desc_criteria", length:"800"})
+    @Column({nullable:false, name: "desc_criteria", length:"30", unique: true})
     descCriteria   : string;
    
+    @Column({nullable:true , name: "obs", length:"500"})
+    obs            : string;
+
     @Column({nullable:false, name: "sn_ativo", length:"1"})
     snAtivo        : string;
 

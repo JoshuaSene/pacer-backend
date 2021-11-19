@@ -6,6 +6,7 @@
     "password": "fatec",
     "database": "pacer", 
     "synchronize": false,
+    "cache": false,
     "logging": true,
     "entities": [
       "src/**/entities/*.entity.{ts,js}"
