@@ -17,5 +17,6 @@ export class Criteria {
     snAtivo        : string;
 
     @OneToMany(() => NotesStore, notes => notes.criterio)
-    notes: NotesStore[];    
+    notes: NotesStore[];   
+     
 }
