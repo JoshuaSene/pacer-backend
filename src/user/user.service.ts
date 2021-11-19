@@ -66,6 +66,18 @@ export class UserService {
     });
   }
 
+  async wipeData(id: string): Promise<User> {
+    const user = await this.repository.findOne(id);
+
+    if(!user) {
+      throw new NotFoundException(`Could not find user with id ${id}`);
+    }
+
+    user.document = ""
+    user.email = ""
+    return this.repository.save(user);
+  }
+
   async findAll(): Promise<User[]> {
     return this.repository.find();
   }
