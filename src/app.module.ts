@@ -13,6 +13,7 @@ import { UserTeamModule } from './user-team/user-team.module';
 import { NotesStoreModule } from './notes-store/notes-store.module';
 import { ProjectUserModule } from './project-user/project-user.module';
 import { CriteriaProjectModule } from './criteria-project/criteria-project.module';
+import { RecoveryModule } from './auth/recovery.module';
 
 @Module({  
   imports: [
@@ -21,7 +22,7 @@ import { CriteriaProjectModule } from './criteria-project/criteria-project.modul
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'fatec',
+      password: 'root',
       database: 'pacer',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false
@@ -37,7 +38,8 @@ import { CriteriaProjectModule } from './criteria-project/criteria-project.modul
     UserModule,
     RoleModule,
     UserRoleModule,
-    UserTeamModule
+    UserTeamModule,
+    RecoveryModule
   ], 
   controllers: [],
   providers: [],
