@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Delete, Query, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Query, BadRequestException, Param } from '@nestjs/common';
 import { CriteriaProjectService } from './criteria-project.service';
 import { CreateCriteriaProjectDto } from './dto/create-criteria-project.dto';
 import { UpdateCriteriaProjectDto } from './dto/update-criteria-project.dto';
@@ -14,6 +14,17 @@ export class CriteriaProjectController {
     return this.criteriaProjectService.create(createCriteriaProjectDto);
   }
 
+  /**
+   * Lista de critérios de um projeto
+   * @returns list
+   */
+  @Get(':idProject')
+  findByProject(
+    @Param('idProject') idProject: string, 
+  ): Promise<CriteriaProject[]> {
+    return this.criteriaProjectService.findByProject(idProject);
+  }
+
   @Get()
   findAll(): Promise<CriteriaProject[]> {
     return this.criteriaProjectService.findAll();
@@ -21,11 +32,12 @@ export class CriteriaProjectController {
 
   @Get()
   findOne(
-    @Query('idCriteria') idCriteria: string,
-    @Query('idProject') idProject: string,
-    @Query('snActivated') snActivated: string
+    @Query('idpro') idProject: string,
+    @Query('idcri') idCriteria: string,
   ): Promise<CriteriaProject> {
-    return this.criteriaProjectService.find(idCriteria, idProject, snActivated);
+    console.log("PROJETO " + idProject);
+    console.log("CRITERIO " + idCriteria);
+    return this.criteriaProjectService.find(idProject,idCriteria);
   }
 
   @Get('find-many')
@@ -39,7 +51,7 @@ export class CriteriaProjectController {
     }
 
     if(Helper.isEmpty(idCriteria)) {
-      return this.criteriaProjectService.findForProject(idProject, snActivated);
+      return this.criteriaProjectService.findByProject(idProject);
     }
     
     if(Helper.isEmpty(idProject)) {
@@ -51,17 +63,15 @@ export class CriteriaProjectController {
 
   @Patch()
   update(
-    @Query('idCriteria') idCriteria: string,
-    @Query('idProject') idProject: string, 
     @Body() dto: UpdateCriteriaProjectDto) {
-    return this.criteriaProjectService.update(idCriteria, idProject, dto);
+    return this.criteriaProjectService.update(dto);
   }
 
   @Delete()
   remove(
-    @Query('idCriteria') idCriteria: string,
-    @Query('idProject') idProject: string,
+    @Query('project') idProject: string,
+    @Query('criteria') idCriteria: string,
   ) {
-    return this.criteriaProjectService.delete(idCriteria, idProject);
+    return this.criteriaProjectService.delete( idProject , idCriteria );
   }
 }
