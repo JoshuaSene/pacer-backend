@@ -5,6 +5,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { NotesStore } from './entities/notes-store.entity';
 import { CreateNotesStoreDto } from './dto/create-notes-store.dto';
 import { UpdateNotesStoreDto } from './dto/update-notes-store.dto';
+import { ReturnNotesDashboardDto } from './dto/return-notes-dashboard.dto';
 
 @Injectable()
 export class NotesStoreService {
@@ -93,5 +94,38 @@ export class NotesStoreService {
     } catch (error) {
       throw new Error(`Error Deleting Note! \nMessage: ${error}`);
     }
+  }
+
+  async getSelfNotes(idSprint: string, idUser: string): Promise<ReturnNotesDashboardDto>  {
+    const selfNotes = await this.noteStoreRepository.find({
+      where: { 
+        idEvaluator: idUser,
+        idSprint: idSprint,
+        idEvaluated: idUser
+      }
+    });
+    
+    if (!selfNotes) {
+      throw new NotFoundException('SelfNotes Invalid');
+    }
+
+    // const teamNotes = await this.noteStoreRepository.find({
+    //   where: { 
+    //     idEvaluator: idUser,
+    //     idSprint: idSprint,
+       
+    //   }
+    const teamNotes = await this.noteStoreRepository.createQueryBuilder('notes_store')
+    .where('notes_store.id_evaluator != :idUser', {idUser: idUser})
+    .andWhere('notes_store.id_evaluated = :idUser',{idUser: idUser})
+    .andWhere('notes_store.id_sprint = :idSprint',{idSprint: idSprint}) 
+    .getMany();
+   console.log(teamNotes)
+    
+    if (!teamNotes) {
+      throw new NotFoundException('TeamNotes Invalid');
+    }
+    
+    return new ReturnNotesDashboardDto(selfNotes, teamNotes);
   }
 }
