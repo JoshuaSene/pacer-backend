@@ -20,4 +20,13 @@ export class Sprint {
     @JoinTable()
     project:Project[];
     
+    public didStart(): Boolean {
+        let today = new Date();
+        return this.initialDate.getTime() >= today.getTime();
+    }
+
+    public didEnd(): Boolean {
+        let today = new Date();
+        return this.finalDate.getTime() < today.getTime();
+    }
 }
