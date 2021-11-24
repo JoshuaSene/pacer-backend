@@ -3,8 +3,6 @@ import { Optional } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmpty, IsString, Matches } from "class-validator";
 
-const docRegex = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/
-
 export class CreateUserDto {
   
     @IsString()
@@ -17,9 +15,6 @@ export class CreateUserDto {
 
     @IsString()
     @ApiProperty()
-    @Matches(docRegex, {
-        message: 'Formato inválido'
-    })
     document: string;
 
     @IsString()
