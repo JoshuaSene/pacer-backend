@@ -11,6 +11,7 @@ export class SchedulerService {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleCron() {
+    this.logger.log('Populating table');
     this.notesStoreService.populateTables();
   }
 }

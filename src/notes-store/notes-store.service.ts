@@ -111,13 +111,12 @@ export class NotesStoreService {
     }
   }
   
-  async populateTables(): Promise<string> {
+  async populateTables(): Promise<string> {    
     const sprints = await this.sprintRepository.find();
-
+    
     if(sprints) {
       sprints.forEach(async sprint => {
         if(sprint.didStart() && !sprint.didEnd()) {
-
           // Check if there are notes for this sprint already
           const notes = await this.noteStoreRepository.find({
             where: {
@@ -125,7 +124,7 @@ export class NotesStoreService {
             }
           });
 
-          if(notes || notes.length > 0) {
+          if(notes.length > 0) {
             return;
           }         
 
@@ -138,7 +137,7 @@ export class NotesStoreService {
               idProject: projectId
             }
           });
-  
+
           // Get teacher ids
           const projectUsers = await this.projectUserRepository.find({
             where: {
@@ -148,7 +147,6 @@ export class NotesStoreService {
           
           // get users for every team
           project.teams.forEach(async team => {
-
             let notesStoreArray: CreateNotesStoreDto[] = []
             let ids: string[] = [];
             let teacherIds: string[] = projectUsers.map(val => val.idUser);
@@ -159,7 +157,6 @@ export class NotesStoreService {
             });
             
             if(users && criterias) {
-              
               users.forEach(userTeam => {  
                 ids.push(userTeam.idUser);
                 // find scrum master       
@@ -298,7 +295,6 @@ export class NotesStoreService {
                 }
 
                 console.log(`Payload Array: ${notesStoreArray}`);
-                
                 notesStoreArray.forEach( payload => {   
                   const notes = this.noteStoreRepository.create(
                     payload
@@ -308,6 +304,8 @@ export class NotesStoreService {
               }
             }
           });
+        } else {
+          console.log("sprint did not start");
         }
       });
     }

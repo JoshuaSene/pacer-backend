@@ -22,11 +22,13 @@ export class Sprint {
     
     public didStart(): Boolean {
         let today = new Date();
-        return this.initialDate.getTime() >= today.getTime();
+        let initial = new Date(this.initialDate);
+        return initial.getTime() <= today.getTime();
     }
 
     public didEnd(): Boolean {
         let today = new Date();
-        return this.finalDate.getTime() < today.getTime();
+        let final = new Date(this.finalDate);
+        return final.getTime() <= today.getTime();
     }
 }
