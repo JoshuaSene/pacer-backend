@@ -24,7 +24,6 @@ export class NotesStore {
     @JoinColumn ( {  name : "id_evaluator"  } ) 
     evaluator: User;
 
-
     @Column({nullable:false, name: "id_evaluated"})
     idEvaluated: string;
 
@@ -75,5 +74,4 @@ export class NotesStore {
    
     @Column({nullable: true, name: "obs", length:"800"})
     obs: string;
-
 }

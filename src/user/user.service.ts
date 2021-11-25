@@ -1,3 +1,4 @@
+import { login1635545920323 } from './../database/migrations/1635545920323-login';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { getConnection, getRepository, Repository } from 'typeorm';

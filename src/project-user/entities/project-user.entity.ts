@@ -21,7 +21,7 @@ export class ProjectUser {
     public user!: User
 
     @Column({nullable: false, name: "optional"})
-    optional: string;
+    optional: Boolean;
 
     @Column({nullable: false, name: "sn_activated"})
     snActivated: string;

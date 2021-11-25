@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
@@ -10,6 +11,7 @@ import { ProjectModule } from './project/project.module';
 import { CriteriaModule } from './criteria/criteria.module';
 import { UserRoleModule } from './user-role/user-role.module';
 import { UserTeamModule } from './user-team/user-team.module';
+import { SchedulerModule } from './scheduler/scheduler.module';
 import { NotesStoreModule } from './notes-store/notes-store.module';
 import { ProjectUserModule } from './project-user/project-user.module';
 import { CriteriaProjectModule } from './criteria-project/criteria-project.module';
@@ -37,6 +39,8 @@ import { RecoveryModule } from './auth/recovery.module';
     TeamModule,
     UserModule,
     RoleModule,
+    ScheduleModule.forRoot(),
+    SchedulerModule,
     UserRoleModule,
     UserTeamModule,
     RecoveryModule
