@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Query } from '@nestjs/common';
 import { NotesStoreService } from './notes-store.service';
 import { CreateNotesStoreDto } from './dto/create-notes-store.dto';
 import { UpdateNotesStoreDto } from './dto/update-notes-store.dto';
 import { NotesStore } from './entities/notes-store.entity';
+import { ReturnNotesDashboardDto } from './dto/return-notes-dashboard.dto';
 
 @Controller('notes-store')
 export class NotesStoreController {
@@ -57,5 +58,14 @@ export class NotesStoreController {
   @Delete(':id')
   remove(@Param('id') id: string):Promise<String>  {
     return this.notesStoreService.delete(id);
+  }
+
+  @Get('sprint/:idSprint/:idUser')
+  getSelfNotes(
+    @Param('idSprint') idSprint: string,
+    @Param('idUser') idUser: string
+    ): Promise<ReturnNotesDashboardDto>  {
+      console.log('oi')
+    return this.notesStoreService.getSelfNotes(idSprint, idUser );
   }
 }

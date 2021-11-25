@@ -1,15 +1,16 @@
-import { ProjectUser } from './../project-user/entities/project-user.entity';
-import { User } from './../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
+import { User } from './../user/entities/user.entity';
 import { NotesStore } from './entities/notes-store.entity';
 import { Sprint } from './../sprint/entities/sprint.entity';
 import { Project } from 'src/project/entities/project.entity';
 import { CreateNotesStoreDto } from './dto/create-notes-store.dto';
 import { UpdateNotesStoreDto } from './dto/update-notes-store.dto';
 import { UserTeam } from './../user-team/entities/user-team.entity';
+import { ReturnNotesDashboardDto } from './dto/return-notes-dashboard.dto';
+import { ProjectUser } from './../project-user/entities/project-user.entity';
 import { CriteriaProject } from './../criteria-project/entities/criteria-project.entity';
 
 @Injectable()
@@ -310,5 +311,38 @@ export class NotesStoreService {
       });
     }
     return 'Successfully populated tables!';
+  }
+  
+  async getSelfNotes(idSprint: string, idUser: string): Promise<ReturnNotesDashboardDto>  {
+    const selfNotes = await this.noteStoreRepository.find({
+      where: { 
+        idEvaluator: idUser,
+        idSprint: idSprint,
+        idEvaluated: idUser
+      }
+    });
+    
+    if (!selfNotes) {
+      throw new NotFoundException('SelfNotes Invalid');
+    }
+
+    // const teamNotes = await this.noteStoreRepository.find({
+    //   where: { 
+    //     idEvaluator: idUser,
+    //     idSprint: idSprint,
+       
+    //   }
+    const teamNotes = await this.noteStoreRepository.createQueryBuilder('notes_store')
+    .where('notes_store.id_evaluator != :idUser', {idUser: idUser})
+    .andWhere('notes_store.id_evaluated = :idUser',{idUser: idUser})
+    .andWhere('notes_store.id_sprint = :idSprint',{idSprint: idSprint}) 
+    .getMany();
+   console.log(teamNotes)
+    
+    if (!teamNotes) {
+      throw new NotFoundException('TeamNotes Invalid');
+    }
+    
+    return new ReturnNotesDashboardDto(selfNotes, teamNotes);
   }
 }
