@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
@@ -6,6 +6,7 @@ import { NotesStore } from './entities/notes-store.entity';
 import { CreateNotesStoreDto } from './dto/create-notes-store.dto';
 import { UpdateNotesStoreDto } from './dto/update-notes-store.dto';
 import { ReturnNotesDashboardDto } from './dto/return-notes-dashboard.dto';
+import { reduce } from 'rxjs';
 
 @Injectable()
 export class NotesStoreService {
@@ -96,36 +97,73 @@ export class NotesStoreService {
     }
   }
 
-  async getSelfNotes(idSprint: string, idUser: string): Promise<ReturnNotesDashboardDto>  {
-    const selfNotes = await this.noteStoreRepository.find({
-      where: { 
-        idEvaluator: idUser,
-        idSprint: idSprint,
-        idEvaluated: idUser
-      }
-    });
+  async getSelfNotes(idSprint: string, idUser: string, idProj: string, idCriteria: string ): Promise<any>  {
+ 
+
+    const getSelfNotes = await getConnection().query(
+      `select *
+      from notes_store ns 
+      inner join sprint s on ns.id_sprint = s.id_sprint  
+      inner join criteria_project cco on s.id_project = cco.id_project and cco.id_criteria = ns.id_criteria
+      where s.id_project ='${idProj}'
+      and ns.id_evaluated = '${idUser}' 
+      and ns.id_evaluator = '${idUser}' 
+      and ns.id_criteria = '${idCriteria}'
+      `
+    );
     
-    if (!selfNotes) {
-      throw new NotFoundException('SelfNotes Invalid');
+    if (!getSelfNotes) {
+      throw new NotFoundException('getSelfNotes Invalid');
+    }
+    var notasf = 0;
+    var pesosf = 0;
+    for(var i = 0; i < getSelfNotes.length; i++) {
+      pesosf = getSelfNotes[i].grade_weight
+      notasf += getSelfNotes[i].note
+    }
+    const mediasf = (notasf/getSelfNotes.length) * pesosf
+
+    const selfNotes= {
+      getSelfNotes: getSelfNotes,
+      selfNoteAvg: mediasf
     }
 
-    // const teamNotes = await this.noteStoreRepository.find({
-    //   where: { 
-    //     idEvaluator: idUser,
-    //     idSprint: idSprint,
-       
-    //   }
-    const teamNotes = await this.noteStoreRepository.createQueryBuilder('notes_store')
-    .where('notes_store.id_evaluator != :idUser', {idUser: idUser})
-    .andWhere('notes_store.id_evaluated = :idUser',{idUser: idUser})
-    .andWhere('notes_store.id_sprint = :idSprint',{idSprint: idSprint}) 
-    .getMany();
-   console.log(teamNotes)
-    
+
+   const getTeamNotes = await getConnection().query(
+    `select *
+    from notes_store ns 
+    inner join sprint s on ns.id_sprint = s.id_sprint  
+    inner join criteria_project cco on s.id_project = cco.id_project and cco.id_criteria = ns.id_criteria
+    where s.id_project ='${idProj}'
+    and ns.id_evaluated = '${idUser}' 
+    and ns.id_evaluator <> '${idUser}' 
+    and ns.id_criteria = '${idCriteria}'
+    `
+  );
+
+     
+  if (!getTeamNotes) {
+    throw new NotFoundException('getTeamNotes Invalid');
+  }
+  var notatn = 0;
+  var pesotn = 0;
+  for(var i = 0; i < getTeamNotes.length; i++) {
+    pesotn = getTeamNotes[i].grade_weight
+    notatn += getTeamNotes[i].note
+  }
+
+  const mediatn = (notatn/getTeamNotes.length) * pesotn
+
+  const teamNotes= {
+    getTeamNotes: getTeamNotes,
+    teamNoteAvg: mediatn
+  }
+
+  
     if (!teamNotes) {
       throw new NotFoundException('TeamNotes Invalid');
     }
     
-    return new ReturnNotesDashboardDto(selfNotes, teamNotes);
+    return {selfNotes, teamNotes}
   }
 }

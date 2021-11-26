@@ -72,7 +72,6 @@ export class CriteriaProjectService {
         order: { snActivated: 'DESC', idCriteria: 'ASC' },
       });
     } catch (error) {
-      console.log(error);
       throw new HttpException(error, 500);
     }
   }
@@ -175,7 +174,6 @@ export class CriteriaProjectService {
         .andWhere('sprint.idProject = :idProject', { idProject: idProject })
         .getCount();
     } catch (error) {
-      console.log(error);
       throw new HttpException(
         'Erro desconhecido na verificação de avaliações pendentes deste projeto!',
         500,
@@ -208,7 +206,6 @@ export class CriteriaProjectService {
     try {
       this.repository.delete(criteriaProject);
     } catch (error) {
-      console.log(error);
       throw new HttpException("Erro desconhecido na exclusão do critério!",500);
     }
   }
