@@ -325,6 +325,7 @@ export class NotesStoreService {
       and ns.id_evaluated = '${idUser}' 
       and ns.id_evaluator = '${idUser}' 
       and ns.id_criteria = '${idCriteria}'
+      and ns.id_sprint = '${idSprint}' 
       `
     );
   
@@ -355,6 +356,7 @@ export class NotesStoreService {
     and ns.id_evaluated = '${idUser}' 
     and ns.id_evaluator <> '${idUser}' 
     and ns.id_criteria = '${idCriteria}'
+    and ns.id_sprint = '${idSprint}'  
     `
   );
 
