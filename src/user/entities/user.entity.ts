@@ -32,7 +32,7 @@ export class User {
     name: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         unique: true, 
         name: "document",
         length: 20
