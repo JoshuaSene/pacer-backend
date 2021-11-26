@@ -50,8 +50,8 @@ const transporter = nodemailer.createTransport({
   const mailOptions = {
     from: 'deaav@setytecnologia.com.br',
     to: `${dto.email}`,
-    subject: 'E-mail de confirmação CLUBPOS',
-    text: `Clique no link a seguir para confirme seu cadastro.
+    subject: 'E-mail de redefinicao de senha',
+    text: `Segue abaixo a nova senha para login no Pacer.
      ${newPassword}
   `
   };
