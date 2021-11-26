@@ -29,12 +29,10 @@ export class SprintService {
   ) {}
 
   async create(createSprintDto: CreateSprintDto): Promise<Sprint>  {
-    const sprint =  this.sprintRepository.create(
+    const sprint = this.sprintRepository.create(
       createSprintDto.formatDates()
     ); 
-    const sprintSaved = await this.sprintRepository.save(sprint);
-    
-    this.populateNotesStore(sprintSaved, createSprintDto.idProject);
+    const sprintSaved = await this.sprintRepository.save(sprint);  
 
     return sprintSaved;
   }

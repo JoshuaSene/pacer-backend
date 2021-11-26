@@ -14,6 +14,11 @@ export class NotesStoreController {
     return this.notesStoreService.create(createNotesStoreDto);
   }
 
+  @Post('populate-notes')
+  populateNotes(): Promise<String>{
+    return this.notesStoreService.populateTables();
+  }
+
   @Get()
   findAll() : Promise<NotesStore[]>{
     return this.notesStoreService.findAll();

@@ -1,3 +1,4 @@
+import { Helper } from './../commons/helper';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
@@ -42,8 +43,15 @@ export class ProjectService {
     if (!project) {
       throw new NotFoundException(`Project with id ${id} does not exists.`);
     }
-    
-    const merge = this.repository.merge(project, dto);
+
+    const mergePayload = {
+      description: dto.description,
+      openingDate: Helper.stringToDate(dto.openingDate, "dd/MM/yyyy","/"),
+      closeDate: Helper.stringToDate(dto.closeDate, "dd/MM/yyyy","/"),
+      evaluationFormat: dto.evaluationFormat
+    }
+
+    const merge = this.repository.merge(project, mergePayload);
     return await this.repository.save(merge); 
   }
 
