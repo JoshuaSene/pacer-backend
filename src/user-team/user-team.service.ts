@@ -66,6 +66,8 @@ export class UserTeamService {
   }
 
   async findByTeam(teamId: string): Promise<UserTeam[]> {   
+    console.log(teamId);
+    
     const found = await this.repository.find({
       idTeam: teamId
     });
@@ -109,14 +111,26 @@ export class UserTeamService {
     }
   }
 
-  async enabledSM(userId: string): Promise<UserTeam> { 
+  async enabledSM(userId: string, idTeam: string): Promise<UserTeam> { 
     const userTeam = await this.repository.findOne({
-      idUser: userId
+      idUser: userId,
+      idTeam: idTeam
     });
 
     if(!userTeam || userTeam === null) {
       throw new NotFoundException(`Could not find UserTeam with user '${userId}'.`);
     }
+
+    const userTeamArray = await this.repository.find({
+      where: {
+        idTeam: userTeam.idTeam
+      }
+    });   
+
+    userTeamArray.forEach(item => {
+      item.isScrumMaster = false;
+      this.repository.save(item);
+    });
  
     const newStatus = {
       isScrumMaster: true
