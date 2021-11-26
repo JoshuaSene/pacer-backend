@@ -1,12 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TeamModule } from './team/team.module';
 import { RoleModule } from './role/role.module';
-import { AppController } from './app.controller';
 import { SprintModule } from './sprint/sprint.module';
 import { ProjectModule } from './project/project.module';
 import { CriteriaModule } from './criteria/criteria.module';
@@ -15,6 +13,7 @@ import { UserTeamModule } from './user-team/user-team.module';
 import { NotesStoreModule } from './notes-store/notes-store.module';
 import { ProjectUserModule } from './project-user/project-user.module';
 import { CriteriaProjectModule } from './criteria-project/criteria-project.module';
+import { RecoveryModule } from './auth/recovery.module';
 
 @Module({  
   imports: [
@@ -23,7 +22,7 @@ import { CriteriaProjectModule } from './criteria-project/criteria-project.modul
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'fatec',
+      password: 'root',
       database: 'pacer',
       entities: ['dist/**/*.entity{.ts,.js}'],
       synchronize: false
@@ -39,9 +38,10 @@ import { CriteriaProjectModule } from './criteria-project/criteria-project.modul
     UserModule,
     RoleModule,
     UserRoleModule,
-    UserTeamModule
+    UserTeamModule,
+    RecoveryModule
   ], 
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

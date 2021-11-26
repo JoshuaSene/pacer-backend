@@ -11,12 +11,11 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('PACER')
     .setDescription('PACER project API description')
-    .setVersion('0.2.1')
+    .setVersion('0.14.6')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  // Pipes
   app.useGlobalPipes(
     new ValidationPipe(
       {

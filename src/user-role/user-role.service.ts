@@ -1,16 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { UserRole } from './entities/user-role.entity';
 import { CreateUserRoleDto } from './dto/create-user-role.dto';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
-import { UserRole } from './entities/user-role.entity';
 
 @Injectable()
 export class UserRoleService {
 
   constructor(
     @InjectRepository(UserRole) 
-    private repository: Repository<UserRole>,
+    private repository: Repository<UserRole>
   ) {}
 
   async create(createUserRoleDto: CreateUserRoleDto): Promise<UserRole> {
@@ -25,18 +26,38 @@ export class UserRoleService {
   }
 
   async findOne(id: string): Promise<UserRole> {
-    return await this.repository.findOne(id);
+    const userRole = await this.repository.findOne(id);
+
+    if (!userRole) {
+      throw new NotFoundException(`Could not find UserRole with id ${id}`);
+    }
+
+    return userRole;
   }
 
   async update(id: string, dto: UpdateUserRoleDto): Promise<UserRole> {
     const userRole = await this.repository.findOne(id);
+
+    if (!userRole) {
+      throw new NotFoundException(`Could not find UserRole with id ${id}`);
+    }
+
     const merge = this.repository.merge(userRole, dto);
     return await this.repository.save(merge);
   }
 
   async remove(id: string): Promise<string>  {
     const userRole = await this.repository.findOne(id);
-    this.repository.delete(userRole.idUserRole);
-    return `Project ${id} has been deleted`;
+
+    if (!userRole) {
+      throw new NotFoundException(`Could not find UserRole with id ${id}`);
+    }
+
+    try {
+      this.repository.delete(userRole.idUserRole);
+      return `UserRole ${id} has been deleted`;
+    } catch (error) {
+      throw new Error(`Error deleting UserRole! \nMessage: ${error}`);
+    }
   }
 }

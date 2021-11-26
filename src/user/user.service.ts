@@ -1,22 +1,24 @@
-import { UserApprovalDto } from './dto/user-approval-dto';
-import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from 'src/role/entities/role.entity';
-import { UserRole } from 'src/user-role/entities/user-role.entity';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { getConnection, getRepository, Repository } from 'typeorm';
+
+import { User } from './entities/user.entity';
+import { Role } from 'src/role/entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { ROLES_ENUM } from './../role/enums/role.enum';
+import { UserApprovalDto } from './dto/user-approval-dto';
+import { UserRole } from 'src/user-role/entities/user-role.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private repository: Repository<User>,
+    private repository: Repository<User>
   ) {}
 
   async create(createuserDto: CreateUserDto): Promise<User> {    
-    if(createuserDto.role.toUpperCase() != 'USER') {
+    if(createuserDto.role.toUpperCase() != ROLES_ENUM.USER) {
       createuserDto.status = "pending"
     }
     const createdUser = this.repository.create(createuserDto);
@@ -64,12 +66,30 @@ export class UserService {
     });
   }
 
-  async findAll(): Promise<User[]> {
+  async wipeData(id: string): Promise<User> {
+    const user = await this.repository.findOne(id);
+
+    if(!user) {
+      throw new NotFoundException(`Could not find user with id ${id}`);
+    }
+
+    user.document = ""
+    user.email = ""
+    return this.repository.save(user);
+  }
+
+  async findAll(): Promise<User[]> { 
     return this.repository.find();
   }
 
   async findOne(id: string): Promise<User> {
-    return await this.repository.findOne(id);
+    const user = await this.repository.findOne(id);
+
+    if(!user) {
+      throw new NotFoundException(`Could not find user with id ${id}`);
+    }
+
+    return user;
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -110,19 +130,27 @@ export class UserService {
 
   async update(id: string, dto: UpdateUserDto): Promise<User> {
     const user = await this.repository.findOne(id);
+
     if (!user) {
       throw new NotFoundException(`Could not find user with id ${id}`);
     }
+
     const merge = this.repository.merge(user, dto);
     return await this.repository.save(merge);
   }
 
   async remove(id: string): Promise<string> {
     const user = await this.repository.findOne(id);
+
     if (!user) {
       throw new NotFoundException(`Could not find user with id ${id}`);
     }
-    this.repository.delete(user.idUser);
-    return `User ${id} has been deleted`;
+
+    try {
+      this.repository.delete(user.idUser);
+      return `User ${id} has been deleted`;
+    } catch (error) {
+      throw new Error(`Error deleting User! \nMessage: ${error}`);
+    }
   }
 }
