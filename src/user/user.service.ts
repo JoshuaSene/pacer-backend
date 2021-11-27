@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-
 import { InjectRepository } from '@nestjs/typeorm';
 import { getConnection, getRepository, Repository } from 'typeorm';
 
@@ -39,6 +38,10 @@ export class UserService {
     if (createuserDto.document.replace(" ","").length===0 && 
         createuserDto.role === 'USR'){
       throw new ConflictException("RA não informado!")
+    } else {
+      createuserDto.document = createuserDto.document.length === 0 
+        ? null 
+        : createuserDto.document
     }
 
     if (createuserDto.email.replace(" ","").length===0){
@@ -111,8 +114,7 @@ export class UserService {
       throw new NotFoundException(`Could not find user with id ${id}`);
     }
 
-    user.document = '';
-    user.email = '';
+    user.document = null
     return this.repository.save(user);
   }
 
@@ -203,7 +205,14 @@ export class UserService {
       throw new NotFoundException(`Could not find user with id ${id}`);
     }
 
+    let userRole = await getRepository(UserRole).findOne({
+      where: {
+        idUser: user.idUser
+      }
+    });
+    
     try {
+      getRepository(UserRole).delete(userRole.idUserRole);
       this.repository.delete(user.idUser);
       return `User ${id} has been deleted`;
     } catch (error) {

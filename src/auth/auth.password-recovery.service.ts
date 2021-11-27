@@ -12,13 +12,12 @@ export class PasswordRecoveryService {
     @InjectRepository(User)
     private repository: Repository<User>,
   ) {}
+
   async update(dto: RecoveryPasswordDto): Promise<String> { 
     const user: User = await this.repository.findOne({
-   
-        login: `${dto.login}`,
-        email: `${dto.email}`,
-        document: `${dto.document}`, 
-    
+      login: `${dto.login}`,
+      email: `${dto.email}`,
+      document: `${dto.document}`
     }); 
 
     if (!user) {
@@ -26,7 +25,8 @@ export class PasswordRecoveryService {
     }
 
     const newPassword = (Math.random() + 1).toString(36).substring(4);
-console.log(newPassword)
+    console.log(newPassword)
+
     const objPassword = {
       password: newPassword,
     };

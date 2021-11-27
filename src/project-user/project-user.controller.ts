@@ -19,7 +19,7 @@ export class ProjectUserController {
   constructor(private readonly projectUserService: ProjectUserService) {}
 
   @Post()
-  create(@Body() createProjectUserDto: CreateProjectUserDto) {
+  create(@Body() createProjectUserDto: CreateProjectUserDto) {    
     return this.projectUserService.create(createProjectUserDto);
   }
 
