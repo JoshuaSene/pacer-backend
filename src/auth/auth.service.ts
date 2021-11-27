@@ -42,7 +42,7 @@ export class AuthService {
     let user: User;
 
     try {
-      if(!user) {
+      if(!user && login.indexOf("@") > -1) {
         user = await this.userService.findByEmail(login);
       }
     } catch (error) {
@@ -51,7 +51,11 @@ export class AuthService {
 
     try {
       if(!user) {
-        user = await this.userService.findByDocument(login.replace(/\D/g,''));
+        const doc = login.replace(/\D/g,'');
+        if (doc && doc === login){
+          user = await this.userService.findByDocument(doc);
+        }
+        
       }
     } catch (error) {
       console.log(error.message);
