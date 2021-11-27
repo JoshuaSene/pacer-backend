@@ -5,6 +5,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Role } from './entities/role.entity';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { ROLES_ENUM } from './enums/role.enum';
 
 @Injectable()
 export class RoleService {
@@ -22,6 +23,11 @@ export class RoleService {
   }
 
   async findAll(): Promise<Role[]> {
+    try {
+      await this.minimumData();
+      } catch (error) {
+      console.log(error);
+      }
     return this.repository.find();
   }
 
@@ -60,5 +66,23 @@ export class RoleService {
     } catch (error) {
       throw new Error(`Error Deleting Role! \nMessage: ${error}`);
     }
+  }
+
+  async minimumData(): Promise<string>{
+    const roles = await this.repository.find();
+    if (roles.length === 0){
+      try {
+        await this.create( { "roleName": ROLES_ENUM.ADMIN} );  
+        await this.create( { "roleName": ROLES_ENUM.USER} );  
+        await this.create( { "roleName": ROLES_ENUM.TEACHER} );  
+      } catch (error) {
+        console.log(error);
+      }
+      const msg = "Minimal Data of Role was added.";
+      console.log(msg);
+      return msg;
+
+    }
+
   }
 }

@@ -66,12 +66,13 @@ export class NotesStoreController {
     return this.notesStoreService.delete(id);
   }
 
-  @Get('sprint/:idSprint/:idUser')
+  @Get('sprint/:idSprint/:idUser/:idProj/:idCriteria')
   getSelfNotes(
     @Param('idSprint') idSprint: string,
-    @Param('idUser') idUser: string
-    ): Promise<ReturnNotesDashboardDto>  {
-      console.log('oi')
-    return this.notesStoreService.getSelfNotes(idSprint, idUser );
-  }
+    @Param('idUser') idUser: string,
+    @Param('idProj') idProj: string,
+    @Param('idCriteria') idCriteria: string
+    ): Promise<any>  { 
+      return this.notesStoreService.getSelfNotes(idSprint,  idUser, idProj, idCriteria); 
+    }
 }
