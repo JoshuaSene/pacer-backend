@@ -19,7 +19,6 @@ export class ProjectUserService {
     @InjectRepository(Project) 
     private projectRepository: Repository<Project>
   ) {}
-
   
   async create(createProjectUserDto: CreateProjectUserDto): Promise<ProjectUser>  {
     const user = await this.userRepository.findOne(createProjectUserDto.idUser);

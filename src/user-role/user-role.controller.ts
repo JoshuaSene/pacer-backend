@@ -1,11 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+
 import { UserRoleService } from './user-role.service';
+import { UserRole } from './entities/user-role.entity';
 import { CreateUserRoleDto } from './dto/create-user-role.dto';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
-import { UserRole } from './entities/user-role.entity';
 
 @Controller('user-role')
 export class UserRoleController {
+  
   constructor(private readonly userRoleService: UserRoleService) {}
 
   @Post()

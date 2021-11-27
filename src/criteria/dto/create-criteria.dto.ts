@@ -1,5 +1,5 @@
+import { IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import {IsString} from 'class-validator';
 
 export class CreateCriteriaDto { 
 
@@ -14,5 +14,4 @@ export class CreateCriteriaDto {
     @IsString()
     @ApiProperty()
     obs: string;
-
 }

@@ -7,6 +7,7 @@ import { CreateUserTeamDto } from './dto/create-user-team.dto';
 
 @Controller('user-team')
 export class UserTeamController {
+  
   constructor(private readonly userTeamService: UserTeamService) {}
 
   @Post()

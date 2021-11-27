@@ -1,5 +1,12 @@
-import { Entity, Column,  PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm";
-import {Project} from "../../project/entities/project.entity";
+import { 
+    Entity, 
+    Column, 
+    PrimaryGeneratedColumn, 
+    ManyToMany, 
+    JoinTable 
+} from "typeorm";
+
+import { Project } from "../../project/entities/project.entity";
 
 @Entity({name:"sprint"})
 export class Sprint {

@@ -6,7 +6,8 @@ import {
   Patch, 
   Delete,
   Query, 
-  BadRequestException } from '@nestjs/common';
+  BadRequestException 
+} from '@nestjs/common';
 
 import { Helper } from './../commons/helper';
 import { ProjectUserService } from './project-user.service';
