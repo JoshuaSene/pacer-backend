@@ -21,12 +21,18 @@ export class CriteriaController {
   @Get(':id')
   find(
     @Param('id') id: string, 
-    @Query('snAtivo') snAtivo: string 
     ): Promise<Criteria[]>  {
-    const criteria = this.projectCriteriaService.find(id, snAtivo);
+    const criteria = this.projectCriteriaService.find(id);
     return criteria;
   }
   
+  @Get('desc/:desc')
+  findByDesc(
+    @Param('desc') desc: string, 
+    ): Promise<Criteria>  {
+      return this.projectCriteriaService.findByDesc(desc);
+  }
+
   @Put(':id')
   update(
     @Param('id') id: string,

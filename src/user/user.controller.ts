@@ -20,6 +20,12 @@ export class UserController {
     return this.userService.approve(approvals);
   }
 
+  @Post('wipe-data/:id')
+  wipeData(
+    @Param('id') id: string): Promise<User> {
+    return this.userService.wipeData(id);
+  }
+
   @Get()
   findAll(): Promise<User[]> {
     return this.userService.findAll();

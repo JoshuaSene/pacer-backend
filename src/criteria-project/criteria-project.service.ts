@@ -1,106 +1,212 @@
-import { Repository } from 'typeorm';
+import { getConnection, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { Criteria } from 'src/criteria/entities/criteria.entity';
 import { CriteriaProject } from './entities/criteria-project.entity';
 import { CreateCriteriaProjectDto } from './dto/create-criteria-project.dto';
 import { UpdateCriteriaProjectDto } from './dto/update-criteria-project.dto';
 import { Project } from 'src/project/entities/project.entity';
-
+import { Sprint } from '../sprint/entities/sprint.entity';
+import { NotesStore } from '../notes-store/entities/notes-store.entity';
 @Injectable()
 export class CriteriaProjectService {
-
-  constructor( 
-    @InjectRepository(CriteriaProject) 
+  constructor(
+    @InjectRepository(CriteriaProject)
     private repository: Repository<CriteriaProject>,
-    @InjectRepository(Criteria) 
+    @InjectRepository(Criteria)
     private criteriaRepository: Repository<Criteria>,
-    @InjectRepository(Project) 
+    @InjectRepository(Project)
     private projectRepository: Repository<Project>,
   ) {}
-  
-  
-  async create(createCriteriaDto: CreateCriteriaProjectDto): Promise<CriteriaProject>  {
-    const criteria = this.criteriaRepository.findOne(createCriteriaDto.idCriteria);
 
-    if(!criteria || criteria === null) {
-      throw new NotFoundException(`Criteria with id ${createCriteriaDto.idCriteria} not found.`)
+  valid( idProject: string, idCriteria: string): void {
+    //Verifica se o PROJETO foi informado
+    if (idProject.replace(' ', '').length === 0) {
+      throw new NotFoundException('O projeto não foi informado!');
     }
-
-    const project = this.projectRepository.findOne(createCriteriaDto.idProject);
-
-    if(!project || project === null) {
-      throw new NotFoundException(`Project with id ${createCriteriaDto.idProject} not found.`)
+    //Verifica se o CRITÉRIO foi informado
+    if (idCriteria.replace(' ', '').length === 0) {
+      throw new NotFoundException('O critério não foi informado!');
     }
-
-    const createdCriteria =  this.repository.create(
-      createCriteriaDto
-    ); 
-    const criteriaSaved =  this.repository.save(createdCriteria);
-    return criteriaSaved ;
   }
 
-  async findAll(): Promise<CriteriaProject[]>  {
+  async findAll(): Promise<CriteriaProject[]> {
     return this.repository.find();
   }
 
-  async find(idCriteria: string, idProject: string, snActivated: string): Promise<CriteriaProject>  {
+  /**
+   * Retorna um CriteriaProject com exceção
+   * @param idCriteria 
+   * @param idProject 
+   * @returns CriteriaProject || Exception
+   */
+  async find(idCriteria: string, idProject: string): Promise<CriteriaProject> {
     const criteria = await this.repository.findOne({
       where: {
         idCriteria: `${idCriteria}`,
-        idProject: `${idProject}`, 
-        snActivated: `${snActivated}`
-      }
-    }) 
+        idProject: `${idProject}`,
+      },
+    });
     if (!criteria) {
-      throw new NotFoundException(`CriteriaProject does not exists for project: ${idProject} and criteria: ${idCriteria}.`);
+      throw new NotFoundException(
+        `CriteriaProject does not exists for project: ${idProject} and criteria: ${idCriteria}.`,
+      );
     }
-    return criteria
+    return criteria;
   }
 
-  async findForProject(idProject: string, snActivated: string): Promise<CriteriaProject[]>  {
-    const criterias = await this.repository.find({
-      where: {
-        idProject: `${idProject}`, 
-        snActivated: `${snActivated}`
-      }
-    }) 
-    if (criterias.length == 0) {
-      throw new NotFoundException(`CriteriaProject does not exists for project: ${idProject}.`);
+  /**
+   * Lista de critérios de um projeto
+   **/
+  async findByProject(idProject: string): Promise<CriteriaProject[]> {
+    try {
+      const project = await this.projectRepository.findOne(idProject);
+      return await this.repository.find({
+        where: { project: project },
+        order: { snActivated: 'DESC', idCriteria: 'ASC' },
+      });
+    } catch (error) {
+      throw new HttpException(error, 500);
     }
-    return criterias
   }
 
-  async findForCriteria(idCriteria: string, snActivated: string): Promise<CriteriaProject[]>  {
+  async findForCriteria(
+    idCriteria: string,
+    snActivated: string,
+  ): Promise<CriteriaProject[]> {
     const criterias = await this.repository.find({
       where: {
         idCriteria: `${idCriteria}`,
-        snActivated: `${snActivated}`
-      }
-    }) 
-    if (criterias.length == 0) {
-      throw new NotFoundException(`CriteriaProject does not exists for criteria: ${idCriteria}.`);
+        snActivated: `${snActivated}`,
+      },
+    });
+
+    if (!criterias || criterias.length == 0) {
+      throw new NotFoundException(
+        `CriteriaProject does not exists for criteria: ${idCriteria}.`,
+      );
     }
-    return criterias
+    return criterias;
   }
 
-  async update(idCriteria: string, idProject: string, dto: UpdateCriteriaProjectDto): Promise<CriteriaProject> {
-    const criteria: any = await this.repository.findOne({
+  /**
+   * CREATE
+   * @param createCriteriaDto 
+   * @returns 
+   */
+  async create(
+    dto: CreateCriteriaProjectDto,
+  ): Promise<CriteriaProject> {
+
+    this.valid(dto.idProject,dto.idCriteria);
+
+    const criteria: CriteriaProject = await this.repository.findOne({
       where: {
-        idCriteria: `${idCriteria}`, 
-        idProject: `${idProject}`
-      }
+        idCriteria: `${dto.idCriteria}`,
+        idProject: `${dto.idProject}`,
+      },
     });
-    const merge = this.repository.merge(criteria, dto);
-    return  this.repository.save(merge);
+
+    if (criteria){
+      throw new ConflictException("Este critério já está cadastrado no projeto!");
+    }
+
+    try {
+      dto.snActivated = 'S';
+      return this.repository.save(dto);
+    } catch (error) {
+      console.log(error);
+      throw new HttpException('Erro de inclusão: Critério no projeto!', 500);
+    }
   }
 
-  async delete(idCriteria: string, idProject: string) : Promise<string>  {
-    const projectCrit = this.repository.delete({
-      idCriteria: idCriteria,
-      idProject: idProject
-    });
-    return `CriteriaProject for project ${idProject} and criteria ${idCriteria} has been deleted`
+  /**
+   * UPDATE
+   * @param dto 
+   * @returns 
+   */
+  async update( dto: UpdateCriteriaProjectDto,
+    ): Promise<CriteriaProject> {
+
+      this.valid( dto.idProject, dto.idCriteria );
+    
+      const criteria: CriteriaProject = await this.repository.findOne({
+        where: {
+          idCriteria: `${dto.idCriteria}`,
+          idProject: `${dto.idProject}`,
+        },
+      });
+  
+      if (!criteria) {
+        throw new NotFoundException(
+          "Critério do projeto não localizado!",
+        );
+      }
+  
+      const merge = this.repository.merge(criteria, dto);
+      return this.repository.save(merge);
+    }
+
+  /**
+   * Exclusão de Vínculo de Critério em Projeto.
+   * Se já existir alguma linha de nota gerada não pode excluir.
+   * @param idProject
+   * @param idCriteria
+   * @returns void
+   */
+  async delete(idProject: string, idCriteria: string): Promise<void> {
+
+    //Se já existir notas para este projeto não pode excluir
+    let qtdNotes = 0;
+    try {
+      qtdNotes = await getConnection()
+        .createQueryBuilder()
+        .from(Sprint, 'sprint')
+        .addFrom(NotesStore, 'notes')
+        .where("notes.idCriteria = :idCriteria", { idCriteria: idCriteria})
+        .andWhere('notes.idSprint = sprint.idSprint')
+        .andWhere('sprint.idProject = :idProject', { idProject: idProject })
+        .getCount();
+    } catch (error) {
+      throw new HttpException(
+        'Erro desconhecido na verificação de avaliações pendentes deste projeto!',
+        500,
+      );
+    }
+
+    if (qtdNotes > 0) {
+      throw new ConflictException(
+        'Já existem avaliações pendentes para este projeto. Exclusão não permitida!',
+      );
+    }
+
+    let criteriaProject: CriteriaProject = null;
+    try {
+      criteriaProject = await this.repository.findOne({
+        where: {
+          idProject: `${idProject}`,
+          idCriteria: `${idCriteria}`, 
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw new HttpException("Erro desconhecido na busca pelo critério que será excluído!", 500);
+    }
+
+    if (!criteriaProject) {
+      throw new NotFoundException("Critério do Projeto não foi localizado para exclusão!");
+    }
+
+    try {
+      this.repository.delete(criteriaProject);
+    } catch (error) {
+      throw new HttpException("Erro desconhecido na exclusão do critério!",500);
+    }
   }
 }

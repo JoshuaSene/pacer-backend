@@ -10,4 +10,9 @@ export class CreateCriteriaDto {
     @IsString()
     @ApiProperty()
     snAtivo: string;
+
+    @IsString()
+    @ApiProperty()
+    obs: string;
+
 }
