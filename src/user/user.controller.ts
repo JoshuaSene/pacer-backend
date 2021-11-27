@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { 
+  Body, 
+  Controller, 
+  Delete, 
+  Get, 
+  Param, 
+  Patch, 
+  Post 
+} from "@nestjs/common";
 
 import { UserService } from "./user.service";
 import { User } from "./entities/user.entity";
@@ -8,6 +16,7 @@ import { UserApprovalDto } from './dto/user-approval-dto';
 
 @Controller('user')
 export class UserController {
+  
   constructor(private readonly userService: UserService) {}
 
   @Post()

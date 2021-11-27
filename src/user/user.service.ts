@@ -7,22 +7,22 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { getConnection, getRepository, Repository } from 'typeorm';
 
 import { User } from './entities/user.entity';
-import { Role } from 'src/role/entities/role.entity';
+import { Role } from '../role/entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ROLES_ENUM } from './../role/enums/role.enum';
 import { UserApprovalDto } from './dto/user-approval-dto';
-import { UserRole } from 'src/user-role/entities/user-role.entity';
+import { UserRole } from '../user-role/entities/user-role.entity';
 
 @Injectable()
 export class UserService {
+
   constructor(
     @InjectRepository(User)
-    private repository: Repository<User>,
+    private repository: Repository<User>
   ) {}
 
-  async create(createuserDto: CreateUserDto): Promise<User> {
-    
+  async create(createuserDto: CreateUserDto): Promise<User> {    
     if (createuserDto.role.replace(" ","").length===0){
       throw new ConflictException("Nível de usuário não informado!")
     }
@@ -179,7 +179,7 @@ export class UserService {
         },
       });
       if (!user) {
-        throw new NotFoundException(`Usuário ou senha não cadastrados!`);
+        throw new NotFoundException(`Usuário não localizado pelo login ${login}`);
       }
     } catch (error) {
       throw new NotFoundException(error);

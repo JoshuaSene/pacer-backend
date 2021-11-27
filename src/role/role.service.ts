@@ -3,9 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { Role } from './entities/role.entity';
+import { ROLES_ENUM } from './enums/role.enum';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { ROLES_ENUM } from './enums/role.enum';
 
 @Injectable()
 export class RoleService {
@@ -25,9 +25,9 @@ export class RoleService {
   async findAll(): Promise<Role[]> {
     try {
       await this.minimumData();
-      } catch (error) {
+    } catch (error) {
       console.log(error);
-      }
+    }
     return this.repository.find();
   }
 
@@ -52,13 +52,12 @@ export class RoleService {
     return await this.repository.save(merge);
   }
 
-  async remove(id: string): Promise<string>  {
+  async remove(id: string): Promise<string> {
     const role = await this.repository.findOne(id);
 
     if(!role) {
       throw new NotFoundException(`Role with id '${id}' was not found.`);
     }
-
     
     try {
       this.repository.delete(role);
@@ -68,7 +67,7 @@ export class RoleService {
     }
   }
 
-  async minimumData(): Promise<string>{
+  async minimumData(): Promise<string> {
     const roles = await this.repository.find();
     if (roles.length === 0){
       try {
@@ -81,8 +80,6 @@ export class RoleService {
       const msg = "Minimal Data of Role was added.";
       console.log(msg);
       return msg;
-
     }
-
   }
 }

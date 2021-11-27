@@ -9,7 +9,6 @@ import { Project } from 'src/project/entities/project.entity';
 import { CreateNotesStoreDto } from './dto/create-notes-store.dto';
 import { UpdateNotesStoreDto } from './dto/update-notes-store.dto';
 import { UserTeam } from './../user-team/entities/user-team.entity';
-import { ReturnNotesDashboardDto } from './dto/return-notes-dashboard.dto';
 import { ProjectUser } from './../project-user/entities/project-user.entity';
 import { CriteriaProject } from './../criteria-project/entities/criteria-project.entity';
 
@@ -328,7 +327,6 @@ export class NotesStoreService {
   
   async getSelfNotes(idSprint: string, idUser: string, idProj: string, idCriteria: string ): Promise<any>  {
  
-
     const getSelfNotes = await getConnection().query(
       `select *
       from notes_store ns 
@@ -346,6 +344,7 @@ export class NotesStoreService {
     if (!getSelfNotes) {
       throw new NotFoundException('getSelfNotes Invalid');
     }
+
     var notasf = 0;
     var pesosf = 0;
     for(var i = 0; i < getSelfNotes.length; i++) {
@@ -359,38 +358,36 @@ export class NotesStoreService {
       selfNoteAvg: mediasf
     }
 
+    const getTeamNotes = await getConnection().query(
+      `select *
+      from notes_store ns 
+      inner join sprint s on ns.id_sprint = s.id_sprint  
+      inner join criteria_project cco on s.id_project = cco.id_project and cco.id_criteria = ns.id_criteria
+      where s.id_project ='${idProj}'
+      and ns.id_evaluated = '${idUser}' 
+      and ns.id_evaluator <> '${idUser}' 
+      and ns.id_criteria = '${idCriteria}'
+      and ns.id_sprint = '${idSprint}'  
+      `
+    );
+  
+    if (!getTeamNotes) {
+      throw new NotFoundException('getTeamNotes Invalid');
+    }
 
-   const getTeamNotes = await getConnection().query(
-    `select *
-    from notes_store ns 
-    inner join sprint s on ns.id_sprint = s.id_sprint  
-    inner join criteria_project cco on s.id_project = cco.id_project and cco.id_criteria = ns.id_criteria
-    where s.id_project ='${idProj}'
-    and ns.id_evaluated = '${idUser}' 
-    and ns.id_evaluator <> '${idUser}' 
-    and ns.id_criteria = '${idCriteria}'
-    and ns.id_sprint = '${idSprint}'  
-    `
-  );
+    var notatn = 0;
+    var pesotn = 0;
+    for(var i = 0; i < getTeamNotes.length; i++) {
+      pesotn = getTeamNotes[i].grade_weight
+      notatn += getTeamNotes[i].note
+    }
 
-     
-  if (!getTeamNotes) {
-    throw new NotFoundException('getTeamNotes Invalid');
-  }
-  var notatn = 0;
-  var pesotn = 0;
-  for(var i = 0; i < getTeamNotes.length; i++) {
-    pesotn = getTeamNotes[i].grade_weight
-    notatn += getTeamNotes[i].note
-  }
+    const mediatn = (notatn/getTeamNotes.length) * pesotn
 
-  const mediatn = (notatn/getTeamNotes.length) * pesotn
-
-  const teamNotes= {
-    getTeamNotes: getTeamNotes,
-    teamNoteAvg: mediatn
-  }
-
+    const teamNotes= {
+      getTeamNotes: getTeamNotes,
+      teamNoteAvg: mediatn
+    }
   
     if (!teamNotes) {
       throw new NotFoundException('TeamNotes Invalid');

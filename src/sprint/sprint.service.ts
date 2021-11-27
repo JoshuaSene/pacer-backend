@@ -28,7 +28,7 @@ export class SprintService {
     private projectRepository: Repository<Project>
   ) {}
 
-  async create(createSprintDto: CreateSprintDto): Promise<Sprint>  {
+  async create(createSprintDto: CreateSprintDto): Promise<Sprint> {
     const sprint = this.sprintRepository.create(
       createSprintDto.formatDates()
     ); 
@@ -37,7 +37,7 @@ export class SprintService {
     return sprintSaved;
   }
 
-  async findAll(): Promise<Sprint[]>  {
+  async findAll(): Promise<Sprint[]> {
     return this.sprintRepository.find();
   }
 
@@ -62,7 +62,7 @@ export class SprintService {
     return  this.sprintRepository.save(mergeSprint);
   }
 
-  async delete(id: string) : Promise<string>  {
+  async delete(id: string): Promise<string> {
     const sprint: Sprint = await this.sprintRepository.findOne(id);
     if(!sprint) {
       throw new NotFoundException(`Sprint with id ${id} does not exist`);
@@ -74,62 +74,5 @@ export class SprintService {
     } catch (error) {
       throw new Error(`Error Deleting sprint! \nMessage: ${error}`);
     }
-  }
-
-  private async populateNotesStore(sprint: Sprint, projectId: string) {
-    // **Create notes_store for users and criterias**
-
-    // get project
-    const project = await this.projectRepository.findOne(projectId);
-
-    // get criterias
-    const criterias = await this.criteriaProjectRepository.find({
-      where: {
-        idProject: project.idProject
-      }
-    });
-
-    let notesStoreArray: CreateNotesStoreDto[] = []
-
-    // get users for every team
-    project.teams.forEach(async team => {
-      let scrumMaster: User = new User();
-
-      const users = await this.userTeamRepository.find({
-        idTeam: team.idTeam
-      });
-
-      if(users && criterias) {
-        users.forEach(userTeam => {   
-          // find scrum master       
-          if(userTeam.isScrumMaster) {
-            scrumMaster = userTeam.user;
-          }
-
-          // set payload for notesStore
-          criterias.forEach(criteria => {
-            let payload: CreateNotesStoreDto = new CreateNotesStoreDto();
-            payload.idEvaluated = userTeam.idUser;
-            payload.idGroup = userTeam.idTeam;
-            payload.idSprint = sprint.idSprint;
-            payload.idCriteria = criteria.idCriteria;
-            payload.obs = "";
-            notesStoreArray.push(payload);
-          });
-        });
-
-        // set scrumMaster as evaluator on payloads and create entities
-        notesStoreArray.forEach( payload => {   
-          if(payload.idEvaluated !== scrumMaster.idUser) {
-            payload.idEvaluator = scrumMaster.idUser;
-            const notes = this.notesStoreRepository.create(
-              payload
-            ); 
-            
-            this.notesStoreRepository.save(notes);
-          }    
-        })
-      }
-    });
   }
 }
