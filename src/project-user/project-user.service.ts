@@ -33,7 +33,7 @@ export class ProjectUserService {
     if(!project || project === null) {
       throw new NotFoundException(`Project with id ${createProjectUserDto.idProject} not found.`)
     }
-
+    
     const createdProjectUser = this.repository.create(
       createProjectUserDto
     ); 

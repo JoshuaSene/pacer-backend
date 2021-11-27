@@ -18,7 +18,11 @@ export class UserService {
     private repository: Repository<User>
   ) {}
 
-  async create(createuserDto: CreateUserDto): Promise<User> {    
+  async create(createuserDto: CreateUserDto): Promise<User> {   
+    createuserDto.document = createuserDto.document.length === 0 
+      ? null 
+      : createuserDto.document
+
     if(createuserDto.role.toUpperCase() != ROLES_ENUM.USER) {
       createuserDto.status = "pending"
     }
@@ -74,8 +78,7 @@ export class UserService {
       throw new NotFoundException(`Could not find user with id ${id}`);
     }
 
-    user.document = ""
-    user.email = ""
+    user.document = null
     return this.repository.save(user);
   }
 
@@ -147,7 +150,14 @@ export class UserService {
       throw new NotFoundException(`Could not find user with id ${id}`);
     }
 
+    let userRole = await getRepository(UserRole).findOne({
+      where: {
+        idUser: user.idUser
+      }
+    });
+    
     try {
+      getRepository(UserRole).delete(userRole.idUserRole);
       this.repository.delete(user.idUser);
       return `User ${id} has been deleted`;
     } catch (error) {

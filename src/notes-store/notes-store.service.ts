@@ -85,6 +85,19 @@ export class NotesStoreService {
     return notes;
   }
 
+  async findBySprint(idSprint: string): Promise<NotesStore[]>  {
+    const notes = await this.noteStoreRepository.find({
+      where: { 
+        idSprint: `${idSprint}`
+      }
+    });
+
+    if (!notes || notes.length === 0 || notes === undefined) {
+    throw new NotFoundException(`There are no evaluations for sprint ${idSprint}`);
+    }
+    
+    return notes;
+  }
   
   async update(id: string, updateNotesDto: UpdateNotesStoreDto): Promise<NotesStore> {
     const note: NotesStore = await this.noteStoreRepository.findOne(id);
@@ -144,7 +157,7 @@ export class NotesStoreService {
             where: {
               idProject: `${projectId}`
             }
-          });
+          });         
           
           // get users for every team
           project.teams.forEach(async team => {
@@ -152,7 +165,7 @@ export class NotesStoreService {
             let ids: string[] = [];
             let teacherIds: string[] = projectUsers.map(val => val.idUser);
             let scrumMaster: User = new User();
-            
+
             const users = await this.userTeamRepository.find({
               idTeam: team.idTeam
             });
@@ -180,7 +193,8 @@ export class NotesStoreService {
 
               if(scrumMaster) {                
                 if(everyone) {
-                  ids.concat(teacherIds);
+                  ids = ids.concat(teacherIds);
+                  
                   users.forEach(userTeam => {   
                     for(let i = 0; i < ids.length; i++) {
                       const evaluator = ids[i];
@@ -295,8 +309,7 @@ export class NotesStoreService {
                   });
                 }
 
-                console.log(`Payload Array: ${notesStoreArray}`);
-                notesStoreArray.forEach( payload => {   
+                notesStoreArray.forEach( payload => {                     
                   const notes = this.noteStoreRepository.create(
                     payload
                   ); 

@@ -47,6 +47,12 @@ export class NotesStoreController {
     return this.notesStoreService.findAllPendingEvaluations(idSprint );
   }
 
+  @Get('by-sprint/:idSprint')
+  findBySprint(
+    @Param('idSprint') idSprint: string): Promise<NotesStore[]> {
+    return this.notesStoreService.findBySprint(idSprint);
+  }
+
   @Put(':id')
   update(
     @Param('id') id: string,
