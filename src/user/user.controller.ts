@@ -45,11 +45,10 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch()
   update(
-    @Param('id') id: string, 
     @Body() updateUserDto: UpdateUserDto): Promise<User> {
-    return this.userService.update(id, updateUserDto);
+    return this.userService.update(updateUserDto);
   }
 
   @Delete(':id')

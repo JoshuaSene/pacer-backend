@@ -16,40 +16,40 @@ import { UserRole } from '../user-role/entities/user-role.entity';
 
 @Injectable()
 export class UserService {
-
   constructor(
     @InjectRepository(User)
-    private repository: Repository<User>
+    private repository: Repository<User>,
   ) {}
 
-  async create(createuserDto: CreateUserDto): Promise<User> {    
-    if (createuserDto.role.replace(" ","").length===0){
-      throw new ConflictException("Nível de usuário não informado!")
+  async create(createuserDto: CreateUserDto): Promise<User> {
+    if (createuserDto.role.replace(' ', '').length === 0) {
+      throw new ConflictException('Nível de usuário não informado!');
     }
 
-    if (createuserDto.login.replace(" ","").length===0){
-      throw new ConflictException("Usuário não informado!")
-    }
-    
-    if (createuserDto.name.replace(" ","").length===0){
-      throw new ConflictException("Nome não informado!")
+    if (createuserDto.login.replace(' ', '').length === 0) {
+      throw new ConflictException('Usuário não informado!');
     }
 
-    if (createuserDto.document.replace(" ","").length===0 && 
-        createuserDto.role === 'USR'){
-      throw new ConflictException("RA não informado!")
+    if (createuserDto.name.replace(' ', '').length === 0) {
+      throw new ConflictException('Nome não informado!');
+    }
+
+    if (
+      createuserDto.document.replace(' ', '').length === 0 &&
+      createuserDto.role === 'USR'
+    ) {
+      throw new ConflictException('RA não informado!');
     } else {
-      createuserDto.document = createuserDto.document.length === 0 
-        ? null 
-        : createuserDto.document
+      createuserDto.document =
+        createuserDto.document.length === 0 ? null : createuserDto.document;
     }
 
-    if (createuserDto.email.replace(" ","").length===0){
-      throw new ConflictException("E-mail não informada!")
+    if (createuserDto.email.replace(' ', '').length === 0) {
+      throw new ConflictException('E-mail não informada!');
     }
 
-    if (createuserDto.password.replace(" ","").length===0){
-      throw new ConflictException("Senha não informada!")
+    if (createuserDto.password.replace(' ', '').length === 0) {
+      throw new ConflictException('Senha não informada!');
     }
 
     if (createuserDto.role.toUpperCase() != ROLES_ENUM.USER) {
@@ -88,23 +88,35 @@ export class UserService {
     return userSaved;
   }
 
+  // APROVAÇÃO DE NOVOS USUÁRIOS PROFESSORES OU ADMINISTRADORES
   async approve(approvals: UserApprovalDto[]) {
+    let nao_aprovados = 0;
+
     approvals.forEach(async (approval) => {
-      const element = {
-        status: approval.approved ? 'enabled' : 'disabled',
-      };
-
       const user = await this.repository.findOne(approval.id);
-
-      if (!user) {
-        throw new NotFoundException(
-          `Could not find user with id ${approval.id}`,
-        );
+      if (user) {
+        try {
+          this.repository.update(approval.id, {
+            status: approval.approved ? 'enabled' : 'disabled',
+            password: null,
+          });
+        } catch (error) {
+          console.log(error);
+          nao_aprovados += 1;
+        }
+      } else {
+        nao_aprovados += 1;
       }
-
-      const merge = this.repository.merge(user, element);
-      this.repository.save(merge);
     });
+
+    if (nao_aprovados > 0) {
+      throw new ConflictException(
+        `Quantidade de aprovações que falharam: ${nao_aprovados}`,
+      );
+    }
+
+    //const merge = this.repository.merge(user, element);
+    //this.repository.save(merge);
   }
 
   async wipeData(id: string): Promise<User> {
@@ -114,7 +126,7 @@ export class UserService {
       throw new NotFoundException(`Could not find user with id ${id}`);
     }
 
-    user.document = null
+    user.document = null;
     return this.repository.save(user);
   }
 
@@ -179,7 +191,9 @@ export class UserService {
         },
       });
       if (!user) {
-        throw new NotFoundException(`Usuário não localizado pelo login ${login}`);
+        throw new NotFoundException(
+          `Usuário não localizado pelo login ${login}`,
+        );
       }
     } catch (error) {
       throw new NotFoundException(error);
@@ -187,15 +201,17 @@ export class UserService {
     return user;
   }
 
-  async update(id: string, dto: UpdateUserDto): Promise<User> {
-    const user = await this.repository.findOne(id);
-
+  async update(dto: UpdateUserDto): Promise<User> {
+    const user = await this.repository.findOne({ login: dto.login });
     if (!user) {
-      throw new NotFoundException(`Could not find user with id ${id}`);
+      throw new NotFoundException(`Usuário/login não localizado: ${dto.login}`);
     }
 
-    const merge = this.repository.merge(user, dto);
-    return await this.repository.save(merge);
+    try {
+      return await this.repository.save(dto);
+    } catch (error) {
+      throw new ConflictException(error);
+    }
   }
 
   async remove(id: string): Promise<string> {
@@ -207,10 +223,10 @@ export class UserService {
 
     let userRole = await getRepository(UserRole).findOne({
       where: {
-        idUser: user.idUser
-      }
+        idUser: user.idUser,
+      },
     });
-    
+
     try {
       getRepository(UserRole).delete(userRole.idUserRole);
       this.repository.delete(user.idUser);
