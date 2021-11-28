@@ -14,19 +14,19 @@ export class TeamService {
     private teamRepository: Repository<Team>
   ) {}  
   
-  async create(createTeamDto: CreateTeamDto): Promise<Team>  {
+  async create(createTeamDto: CreateTeamDto): Promise<Team> {
     const team = this.teamRepository.create(
       createTeamDto
     ); 
     const teamSaved = this.teamRepository.save(team);
-    return teamSaved ;
+    return teamSaved;
   }
 
-  async findAll(): Promise<Team[]>  {
+  async findAll(): Promise<Team[]> {
     return this.teamRepository.find();
   }
 
-  async find(id: string): Promise<Team>  {
+  async find(id: string): Promise<Team> {
     const team = await this.teamRepository.findOne(id) 
 
     if (!team || team === undefined) {
@@ -47,7 +47,7 @@ export class TeamService {
     return this.teamRepository.save(mergeTeam);
   }
 
-  async delete(id: string) : Promise<string>  {
+  async delete(id: string) : Promise<string> {
     const team: Team = await this.teamRepository.findOne(id);
 
     if (!team || team === undefined) {

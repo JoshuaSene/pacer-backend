@@ -1,16 +1,18 @@
-import { LoginDto } from './dto/login.dto';
 import { compareSync } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { Injectable } from '@nestjs/common';
 
+import { LoginDto } from './dto/login.dto';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from './../user/user.service';
+import { MessagesHelper } from './../commons/message.helper';
 
 @Injectable()
 export class AuthService {
+
   constructor(
     private readonly userService: UserService,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async login(loginDto: LoginDto) {   
@@ -29,33 +31,28 @@ export class AuthService {
 
   async validateUser(login: string, password: string) {
     let user: User = await this.findUser(login);
-
     if(user == null) return user;
     
-    const isPasswordValid = compareSync(password, user.password);
+    const isPasswordValid = compareSync(password, user.password);   
     if (!isPasswordValid) return null;
 
     return user;
   }
 
-  private async findUser(login: string): Promise<User> {
+  private async findUser(login: string): Promise<User> {  
     let user: User;
-
+    
     try {
-      if(!user && login.indexOf("@") > -1) {
+      if(!user && this.validateEmail(login)) {
         user = await this.userService.findByEmail(login);
       }
     } catch (error) {
       console.log(error.message);
     }
-
+    
     try {
-      if(!user) {
-        const doc = login.replace(/\D/g,'');
-        if (doc && doc === login){
-          user = await this.userService.findByDocument(doc);
-        }
-        
+      if(!user && this.hasNumber(login)) {
+        user = await this.userService.findByDocument(login.replace(/\D/g,''));
       }
     } catch (error) {
       console.log(error.message);
@@ -70,5 +67,14 @@ export class AuthService {
     }
 
     return user
+  }
+
+  private hasNumber(login: string) {
+    return /\d/.test(login);
+  }
+
+  private validateEmail(email: string) {
+    var re = MessagesHelper.EMAIL_REGEX;
+    return re.test(String(email).toLowerCase());
   }
 }

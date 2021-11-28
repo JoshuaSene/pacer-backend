@@ -1,21 +1,21 @@
 import {
-  Body,
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { Criteria } from './entities/criteria.entity';
 import { CreateCriteriaDto } from './dto/create-criteria.dto';
 import { UpdateCriterionDto } from './dto/update-criteria.dto';
-import { Criteria } from './entities/criteria.entity';
 
 @Injectable()
 export class CriteriaService {
+
   constructor(
     @InjectRepository(Criteria)
-    private criterionRepository: Repository<Criteria>,
+    private criterionRepository: Repository<Criteria>
   ) {}
 
   //Pesquisa critério pela descrição exata.
@@ -58,7 +58,7 @@ export class CriteriaService {
     }
   }
 
-   //Atualiza dados de um critério.
+  //Atualiza dados de um critério.
   async update(
     id: string,
     updateCriterionDto: UpdateCriterionDto,

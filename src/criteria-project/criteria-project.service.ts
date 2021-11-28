@@ -7,20 +7,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { Criteria } from 'src/criteria/entities/criteria.entity';
+import { Sprint } from '../sprint/entities/sprint.entity';
+import { Project } from '../project/entities/project.entity';
 import { CriteriaProject } from './entities/criteria-project.entity';
+import { NotesStore } from '../notes-store/entities/notes-store.entity';
 import { CreateCriteriaProjectDto } from './dto/create-criteria-project.dto';
 import { UpdateCriteriaProjectDto } from './dto/update-criteria-project.dto';
-import { Project } from 'src/project/entities/project.entity';
-import { Sprint } from '../sprint/entities/sprint.entity';
-import { NotesStore } from '../notes-store/entities/notes-store.entity';
 @Injectable()
 export class CriteriaProjectService {
   constructor(
     @InjectRepository(CriteriaProject)
     private repository: Repository<CriteriaProject>,
-    @InjectRepository(Criteria)
-    private criteriaRepository: Repository<Criteria>,
     @InjectRepository(Project)
     private projectRepository: Repository<Project>,
   ) {}
@@ -76,10 +73,7 @@ export class CriteriaProjectService {
     }
   }
 
-  async findForCriteria(
-    idCriteria: string,
-    snActivated: string,
-  ): Promise<CriteriaProject[]> {
+  async findForCriteria(idCriteria: string, snActivated: string): Promise<CriteriaProject[]> {
     const criterias = await this.repository.find({
       where: {
         idCriteria: `${idCriteria}`,
@@ -100,10 +94,7 @@ export class CriteriaProjectService {
    * @param createCriteriaDto 
    * @returns 
    */
-  async create(
-    dto: CreateCriteriaProjectDto,
-  ): Promise<CriteriaProject> {
-
+  async create(dto: CreateCriteriaProjectDto): Promise<CriteriaProject> {
     this.valid(dto.idProject,dto.idCriteria);
 
     const criteria: CriteriaProject = await this.repository.findOne({
@@ -131,27 +122,25 @@ export class CriteriaProjectService {
    * @param dto 
    * @returns 
    */
-  async update( dto: UpdateCriteriaProjectDto,
-    ): Promise<CriteriaProject> {
+  async update(dto: UpdateCriteriaProjectDto): Promise<CriteriaProject> {
+    this.valid(dto.idProject, dto.idCriteria);
+  
+    const criteria: CriteriaProject = await this.repository.findOne({
+      where: {
+        idCriteria: `${dto.idCriteria}`,
+        idProject: `${dto.idProject}`,
+      },
+    });
 
-      this.valid( dto.idProject, dto.idCriteria );
-    
-      const criteria: CriteriaProject = await this.repository.findOne({
-        where: {
-          idCriteria: `${dto.idCriteria}`,
-          idProject: `${dto.idProject}`,
-        },
-      });
-  
-      if (!criteria) {
-        throw new NotFoundException(
-          "Critério do projeto não localizado!",
-        );
-      }
-  
-      const merge = this.repository.merge(criteria, dto);
-      return this.repository.save(merge);
+    if (!criteria) {
+      throw new NotFoundException(
+        "Critério do projeto não localizado!",
+      );
     }
+
+    const merge = this.repository.merge(criteria, dto);
+    return this.repository.save(merge);
+  }
 
   /**
    * Exclusão de Vínculo de Critério em Projeto.
@@ -161,7 +150,6 @@ export class CriteriaProjectService {
    * @returns void
    */
   async delete(idProject: string, idCriteria: string): Promise<void> {
-
     //Se já existir notas para este projeto não pode excluir
     let qtdNotes = 0;
     try {

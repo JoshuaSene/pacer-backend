@@ -9,7 +9,6 @@ import { Project } from 'src/project/entities/project.entity';
 import { CreateNotesStoreDto } from './dto/create-notes-store.dto';
 import { UpdateNotesStoreDto } from './dto/update-notes-store.dto';
 import { UserTeam } from './../user-team/entities/user-team.entity';
-import { ReturnNotesDashboardDto } from './dto/return-notes-dashboard.dto';
 import { ProjectUser } from './../project-user/entities/project-user.entity';
 import { CriteriaProject } from './../criteria-project/entities/criteria-project.entity';
 
@@ -85,6 +84,19 @@ export class NotesStoreService {
     return notes;
   }
 
+  async findBySprint(idSprint: string): Promise<NotesStore[]>  {
+    const notes = await this.noteStoreRepository.find({
+      where: { 
+        idSprint: `${idSprint}`
+      }
+    });
+
+    if (!notes || notes.length === 0 || notes === undefined) {
+    throw new NotFoundException(`There are no evaluations for sprint ${idSprint}`);
+    }
+    
+    return notes;
+  }
   
   async update(id: string, updateNotesDto: UpdateNotesStoreDto): Promise<NotesStore> {
     const note: NotesStore = await this.noteStoreRepository.findOne(id);
@@ -144,7 +156,7 @@ export class NotesStoreService {
             where: {
               idProject: `${projectId}`
             }
-          });
+          });         
           
           // get users for every team
           project.teams.forEach(async team => {
@@ -152,7 +164,7 @@ export class NotesStoreService {
             let ids: string[] = [];
             let teacherIds: string[] = projectUsers.map(val => val.idUser);
             let scrumMaster: User = new User();
-            
+
             const users = await this.userTeamRepository.find({
               idTeam: team.idTeam
             });
@@ -180,7 +192,8 @@ export class NotesStoreService {
 
               if(scrumMaster) {                
                 if(everyone) {
-                  ids.concat(teacherIds);
+                  ids = ids.concat(teacherIds);
+                  
                   users.forEach(userTeam => {   
                     for(let i = 0; i < ids.length; i++) {
                       const evaluator = ids[i];
@@ -295,8 +308,7 @@ export class NotesStoreService {
                   });
                 }
 
-                console.log(`Payload Array: ${notesStoreArray}`);
-                notesStoreArray.forEach( payload => {   
+                notesStoreArray.forEach( payload => {                     
                   const notes = this.noteStoreRepository.create(
                     payload
                   ); 
@@ -315,7 +327,6 @@ export class NotesStoreService {
   
   async getSelfNotes(idSprint: string, idUser: string, idProj: string, idCriteria: string ): Promise<any>  {
  
-
     const getSelfNotes = await getConnection().query(
       `select *
       from notes_store ns 
@@ -333,6 +344,7 @@ export class NotesStoreService {
     if (!getSelfNotes) {
       throw new NotFoundException('getSelfNotes Invalid');
     }
+
     var notasf = 0;
     var pesosf = 0;
     for(var i = 0; i < getSelfNotes.length; i++) {
@@ -346,38 +358,36 @@ export class NotesStoreService {
       selfNoteAvg: mediasf
     }
 
+    const getTeamNotes = await getConnection().query(
+      `select *
+      from notes_store ns 
+      inner join sprint s on ns.id_sprint = s.id_sprint  
+      inner join criteria_project cco on s.id_project = cco.id_project and cco.id_criteria = ns.id_criteria
+      where s.id_project ='${idProj}'
+      and ns.id_evaluated = '${idUser}' 
+      and ns.id_evaluator <> '${idUser}' 
+      and ns.id_criteria = '${idCriteria}'
+      and ns.id_sprint = '${idSprint}'  
+      `
+    );
+  
+    if (!getTeamNotes) {
+      throw new NotFoundException('getTeamNotes Invalid');
+    }
 
-   const getTeamNotes = await getConnection().query(
-    `select *
-    from notes_store ns 
-    inner join sprint s on ns.id_sprint = s.id_sprint  
-    inner join criteria_project cco on s.id_project = cco.id_project and cco.id_criteria = ns.id_criteria
-    where s.id_project ='${idProj}'
-    and ns.id_evaluated = '${idUser}' 
-    and ns.id_evaluator <> '${idUser}' 
-    and ns.id_criteria = '${idCriteria}'
-    and ns.id_sprint = '${idSprint}'  
-    `
-  );
+    var notatn = 0;
+    var pesotn = 0;
+    for(var i = 0; i < getTeamNotes.length; i++) {
+      pesotn = getTeamNotes[i].grade_weight
+      notatn += getTeamNotes[i].note
+    }
 
-     
-  if (!getTeamNotes) {
-    throw new NotFoundException('getTeamNotes Invalid');
-  }
-  var notatn = 0;
-  var pesotn = 0;
-  for(var i = 0; i < getTeamNotes.length; i++) {
-    pesotn = getTeamNotes[i].grade_weight
-    notatn += getTeamNotes[i].note
-  }
+    const mediatn = (notatn/getTeamNotes.length) * pesotn
 
-  const mediatn = (notatn/getTeamNotes.length) * pesotn
-
-  const teamNotes= {
-    getTeamNotes: getTeamNotes,
-    teamNoteAvg: mediatn
-  }
-
+    const teamNotes= {
+      getTeamNotes: getTeamNotes,
+      teamNoteAvg: mediatn
+    }
   
     if (!teamNotes) {
       throw new NotFoundException('TeamNotes Invalid');

@@ -1,8 +1,17 @@
-import { Controller, Get, Post, Body,Param, Delete, Query, Put } from '@nestjs/common'; 
+import { 
+  Controller, 
+  Get, 
+  Post, 
+  Body,
+  Param, 
+  Delete, 
+  Put 
+} from '@nestjs/common'; 
+
+import { SprintService } from './sprint.service';
 import { Sprint } from './entities/sprint.entity';
 import { CreateSprintDto } from './dto/create-sprint.dto';
 import { UpdateSprintDto } from './dto/update-sprint.dto';
-import { SprintService } from './sprint.service';
 
 @Controller('sprint')
 export class SprintController {
@@ -14,14 +23,12 @@ export class SprintController {
   }
 
   @Get()
-  findAll(): Promise<Sprint[]>  { 
+  findAll(): Promise<Sprint[]> { 
     return this.sprintService.findAll();
   }
 
   @Get(':id')
-  find(
-    @Param('id') id: string
-    ): Promise<Sprint>  {
+  find(@Param('id') id: string): Promise<Sprint> {
     const sprint = this.sprintService.find(id);
     return sprint;
   }
@@ -30,13 +37,12 @@ export class SprintController {
   update(
     @Param('id') id: string,
     @Body() UpdateSprintDto: UpdateSprintDto
-    ):Promise<Sprint>  {
+    ):Promise<Sprint> {
       return this.sprintService.update(id, UpdateSprintDto);
   }
   
-
   @Delete(':id')
-  remove(@Param('id') id: string):Promise<String>  {
+  remove(@Param('id') id: string):Promise<String> {
     return this.sprintService.delete(id);
   }
 }

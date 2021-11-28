@@ -1,8 +1,14 @@
-import { Criteria } from "../../criteria/entities/criteria.entity";
+import { 
+    Column, 
+    Entity, 
+    JoinColumn, 
+    ManyToOne, 
+    PrimaryGeneratedColumn 
+} from "typeorm";
 
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../user/entities/user.entity";
 import { Sprint } from "../../sprint/entities/sprint.entity";
+import { Criteria } from "../../criteria/entities/criteria.entity";
 
 @Entity()
 export class NotesStore {

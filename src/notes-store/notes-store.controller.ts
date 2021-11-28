@@ -1,12 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Query } from '@nestjs/common';
+import { 
+  Controller, 
+  Get, 
+  Post, 
+  Body, 
+  Param, 
+  Delete, 
+  Put 
+} from '@nestjs/common';
+
 import { NotesStoreService } from './notes-store.service';
+import { NotesStore } from './entities/notes-store.entity';
 import { CreateNotesStoreDto } from './dto/create-notes-store.dto';
 import { UpdateNotesStoreDto } from './dto/update-notes-store.dto';
-import { NotesStore } from './entities/notes-store.entity';
-import { ReturnNotesDashboardDto } from './dto/return-notes-dashboard.dto';
 
 @Controller('notes-store')
 export class NotesStoreController {
+
   constructor(private readonly notesStoreService: NotesStoreService) {}
 
   @Post()
@@ -47,6 +56,12 @@ export class NotesStoreController {
     return this.notesStoreService.findAllPendingEvaluations(idSprint );
   }
 
+  @Get('by-sprint/:idSprint')
+  findBySprint(
+    @Param('idSprint') idSprint: string): Promise<NotesStore[]> {
+    return this.notesStoreService.findBySprint(idSprint);
+  }
+
   @Put(':id')
   update(
     @Param('id') id: string,
@@ -68,5 +83,5 @@ export class NotesStoreController {
     @Param('idCriteria') idCriteria: string
     ): Promise<any>  { 
       return this.notesStoreService.getSelfNotes(idSprint,  idUser, idProj, idCriteria); 
-    }
+  }
 }

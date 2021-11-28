@@ -19,7 +19,6 @@ export class ProjectUserService {
     @InjectRepository(Project) 
     private projectRepository: Repository<Project>
   ) {}
-
   
   async create(createProjectUserDto: CreateProjectUserDto): Promise<ProjectUser>  {
     const user = await this.userRepository.findOne(createProjectUserDto.idUser);
@@ -33,7 +32,7 @@ export class ProjectUserService {
     if(!project || project === null) {
       throw new NotFoundException(`Project with id ${createProjectUserDto.idProject} not found.`)
     }
-
+    
     const createdProjectUser = this.repository.create(
       createProjectUserDto
     ); 
