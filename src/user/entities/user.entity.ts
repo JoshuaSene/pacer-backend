@@ -32,7 +32,7 @@ export class User {
     name: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
         unique: true, 
         name: "document",
         length: 20
@@ -84,6 +84,6 @@ export class User {
     @BeforeUpdate()
     hashPassword() {
         this.password = hashSync(this.password, 10);
-        this.document = this.document.replace(/\D/g,'');
+        this.document = this.document !== null ? this.document.replace(/\D/g,'') : null;
     }
 }

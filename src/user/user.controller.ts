@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { 
+  Body, 
+  Controller, 
+  Delete, 
+  Get, 
+  Param, 
+  Patch, 
+  Post 
+} from "@nestjs/common";
 
 import { UserService } from "./user.service";
 import { User } from "./entities/user.entity";
@@ -8,16 +16,23 @@ import { UserApprovalDto } from './dto/user-approval-dto';
 
 @Controller('user')
 export class UserController {
+  
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {   
     return this.userService.create(createUserDto);
   }
 
   @Post('approve')
   approve(@Body() approvals: UserApprovalDto[]) {
     return this.userService.approve(approvals);
+  }
+
+  @Post('wipe-data/:id')
+  wipeData(
+    @Param('id') id: string): Promise<User> {
+    return this.userService.wipeData(id);
   }
 
   @Get()

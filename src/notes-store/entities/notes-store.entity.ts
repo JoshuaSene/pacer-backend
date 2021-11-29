@@ -1,8 +1,14 @@
-import { Criteria } from "../../criteria/entities/criteria.entity";
+import { 
+    Column, 
+    Entity, 
+    JoinColumn, 
+    ManyToOne, 
+    PrimaryGeneratedColumn 
+} from "typeorm";
 
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../../user/entities/user.entity";
 import { Sprint } from "../../sprint/entities/sprint.entity";
+import { Criteria } from "../../criteria/entities/criteria.entity";
 
 @Entity()
 export class NotesStore {
@@ -23,7 +29,6 @@ export class NotesStore {
     })
     @JoinColumn ( {  name : "id_evaluator"  } ) 
     evaluator: User;
-
 
     @Column({nullable:false, name: "id_evaluated"})
     idEvaluated: string;
@@ -75,5 +80,4 @@ export class NotesStore {
    
     @Column({nullable: true, name: "obs", length:"800"})
     obs: string;
-
 }

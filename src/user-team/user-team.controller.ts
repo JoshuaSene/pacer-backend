@@ -7,6 +7,7 @@ import { CreateUserTeamDto } from './dto/create-user-team.dto';
 
 @Controller('user-team')
 export class UserTeamController {
+  
   constructor(private readonly userTeamService: UserTeamService) {}
 
   @Post()
@@ -14,13 +15,13 @@ export class UserTeamController {
     return this.userTeamService.create(createUserTeamDto);
   }
  
-  @Post('enable-sm')
+  @Post('enable-sm/:userId')
   enabledSM(
-    @Body('userId') userId: string, 
+    @Param('userId') userId: string, 
+    @Body('idTeam') idTeam: string,
     ):Promise<UserTeam>  {
-      return this.userTeamService.enabledSM(userId);
+      return this.userTeamService.enabledSM(userId, idTeam);
   }
-  
 
   @Get()
   findAll(@Query('idTeam') idTeam?: string): Promise<UserTeam[]> {
@@ -32,6 +33,12 @@ export class UserTeamController {
     @Query('idUser') idUser: string,
     @Query('idTeam') idTeam: string): Promise<UserTeam> {
     return this.userTeamService.findOne(idUser, idTeam);
+  }
+
+  @Get('by-team/:idTeam')
+  findByTeam(
+    @Param('idTeam') idTeam: string): Promise<UserTeam[]> {
+    return this.userTeamService.findByTeam(idTeam);
   }
 
   @Patch()

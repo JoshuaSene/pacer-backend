@@ -27,4 +27,8 @@ export class Project {
         { eager: true }
     )
     teams: Team[]
+
+    public everyoneEvaluates(): Boolean {
+        return this.evaluationFormat.toUpperCase() === 'T';
+    }
 }

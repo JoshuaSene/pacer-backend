@@ -1,5 +1,12 @@
-import { Entity, Column,  PrimaryGeneratedColumn, ManyToMany, JoinTable } from "typeorm";
-import {Project} from "../../project/entities/project.entity";
+import { 
+    Entity, 
+    Column, 
+    PrimaryGeneratedColumn, 
+    ManyToMany, 
+    JoinTable 
+} from "typeorm";
+
+import { Project } from "../../project/entities/project.entity";
 
 @Entity({name:"sprint"})
 export class Sprint {
@@ -20,4 +27,15 @@ export class Sprint {
     @JoinTable()
     project:Project[];
     
+    public didStart(): Boolean {
+        let today = new Date();
+        let initial = new Date(this.initialDate);
+        return initial.getTime() <= today.getTime();
+    }
+
+    public didEnd(): Boolean {
+        let today = new Date();
+        let final = new Date(this.finalDate);
+        return final.getTime() <= today.getTime();
+    }
 }

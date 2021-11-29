@@ -1,15 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Project } from 'src/project/entities/project.entity';
-import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { User } from 'src/user/entities/user.entity';
+import { ProjectUser } from './entities/project-user.entity';
+import { Project } from 'src/project/entities/project.entity';
 import { CreateProjectUserDto } from './dto/create-project-user.dto';
 import { UpdateProjectUserDto } from './dto/update-project-user.dto';
-import { ProjectUser } from './entities/project-user.entity';
 
 @Injectable()
 export class ProjectUserService {
-
 
   constructor( 
     @InjectRepository(ProjectUser) 
@@ -17,9 +17,8 @@ export class ProjectUserService {
     @InjectRepository(User) 
     private userRepository: Repository<User>,
     @InjectRepository(Project) 
-    private projectRepository: Repository<Project>,
+    private projectRepository: Repository<Project>
   ) {}
-
   
   async create(createProjectUserDto: CreateProjectUserDto): Promise<ProjectUser>  {
     const user = await this.userRepository.findOne(createProjectUserDto.idUser);
@@ -33,7 +32,7 @@ export class ProjectUserService {
     if(!project || project === null) {
       throw new NotFoundException(`Project with id ${createProjectUserDto.idProject} not found.`)
     }
-
+    
     const createdProjectUser = this.repository.create(
       createProjectUserDto
     ); 
@@ -83,7 +82,7 @@ export class ProjectUserService {
       }
     }) 
     if (users.length == 0) {
-      throw new NotFoundException(`ProjectUsers does not exists for user: ${users}.`);
+      throw new NotFoundException(`ProjectUsers does not exists for user: ${idUser}.`);
     }
     return users
   }
@@ -95,15 +94,32 @@ export class ProjectUserService {
         idProject: `${idProject}`
       }
     });
+
+    if(!projectUser) {
+      throw new NotFoundException(`ProjectUsers does not exists for user '${idUser}' and project '${idProject}'!`);
+    }
+
     const merge = this.repository.merge(projectUser, dto);
     return await this.repository.save(merge);
   }
 
   async delete(idUser: string, idProject: string) : Promise<string>  {
-    const projectCrit = await this.repository.delete({
-      idUser: idUser,
-      idProject: idProject
+    const projectUser: any = await this.repository.findOne({
+      where: {
+        idUser: `${idUser}`, 
+        idProject: `${idProject}`
+      }
     });
-    return `ProjectUser for project ${idProject} and user ${idUser} has been deleted`;
+
+    if(!projectUser) {
+      throw new NotFoundException(`ProjectUsers does not exists for user '${idUser}' and project '${idProject}'!`);
+    }
+
+    try {
+      this.repository.delete(projectUser);
+      return `ProjectUser for project ${idProject} and user ${idUser} has been deleted`;
+    } catch (error) {
+      throw new Error(`Error Deleting ProjectUser! \nMessage: ${error}`);
+    }
   }
 }

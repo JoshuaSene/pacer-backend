@@ -6,17 +6,27 @@ import { Criteria } from "../../criteria/entities/criteria.entity";
 @Entity()
 export class CriteriaProject {
 
-    @PrimaryColumn('uuid', {name: "id_criteria"})
+    @PrimaryColumn({nullable:false, name: "id_project"})
+    idProject: string;
+    
+    @ManyToOne(() => Project, (project: Project) => project.idProject,{
+        primary: true,
+        eager: true,
+        nullable: false,
+        cascade: false,
+    })
+    @JoinColumn({ name: 'id_project' })
+    project: Project
+
+    @PrimaryColumn({name: "id_criteria"})
     idCriteria: string;
 
-    @PrimaryColumn('uuid', {name: "id_project"})
-    idProject: string;
-
-    @ManyToOne(() => Project, (project: Project) => project.idProject, {primary: true})
-    @JoinColumn({ name: 'id_project' })
-    public project!: Project
-
-    @ManyToOne(() => Criteria, (criteria: Criteria) => criteria.idCriteria, {primary: true})
+    @ManyToOne(() => Criteria, (criteria: Criteria) => criteria.idCriteria, {
+        primary: true,
+        eager: true,
+        nullable: false,
+        cascade: false,
+    })
     @JoinColumn({ name: 'id_criteria' })
     public criteria!: Criteria
 
