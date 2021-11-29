@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 
 import { User } from 'src/user/entities/user.entity';
 import { ProjectUser } from './entities/project-user.entity';
@@ -42,6 +42,23 @@ export class ProjectUserService {
 
   async findAll(): Promise<ProjectUser[]>  {
     return this.repository.find();
+  }
+
+  async findByProject(idProject: string): Promise<ProjectUser>  {
+    try {
+      const projectUser = await this.repository.findOne({
+        where: {
+          idProject: `${idProject}`
+        }
+      }) 
+      // Isto retornava uma mensagem indevida no front
+      // if (!projectUser) {
+      //   throw new NotFoundException("Projeto x Professor não encontrado!");
+      // }
+      return projectUser
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   async find(idUser: string, idProject: string, optional: string, snActivated: string): Promise<ProjectUser>  {
