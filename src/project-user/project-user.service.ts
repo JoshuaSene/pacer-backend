@@ -1,6 +1,6 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 
 import { User } from 'src/user/entities/user.entity';
 import { ProjectUser } from './entities/project-user.entity';
@@ -44,18 +44,16 @@ export class ProjectUserService {
     return this.repository.find();
   }
 
-  async findByProject(idProject: string): Promise<ProjectUser>  {
+  async findByProject(idProject: string): Promise<ProjectUser[]>  {
     try {
-      const projectUser = await this.repository.findOne({
-        where: {
-          idProject: `${idProject}`
-        }
-      }) 
+      return await this.repository.find({
+        where: { idProject: idProject },
+        order: { snActivated: 'DESC'}
+      });
       // Isto retornava uma mensagem indevida no front
       // if (!projectUser) {
       //   throw new NotFoundException("Projeto x Professor não encontrado!");
       // }
-      return projectUser
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -104,20 +102,25 @@ export class ProjectUserService {
     return users
   }
 
-  async update(idUser: string, idProject: string, dto: UpdateProjectUserDto): Promise<ProjectUser> {
+  async update( dto: UpdateProjectUserDto ): Promise<ProjectUser> {
     const projectUser: any = await this.repository.findOne({
       where: {
-        idUser: `${idUser}`, 
-        idProject: `${idProject}`
+        idUser: dto.idUser, 
+        idProject: dto.idProject
       }
     });
 
     if(!projectUser) {
-      throw new NotFoundException(`ProjectUsers does not exists for user '${idUser}' and project '${idProject}'!`);
+      throw new NotFoundException("Professor do Projeto não localizado!");
     }
+    try {
 
-    const merge = this.repository.merge(projectUser, dto);
-    return await this.repository.save(merge);
+      const merge = this.repository.merge(projectUser,dto);
+      return await this.repository.save(merge);  
+    } catch (error) {
+      throw new ConflictException(error.message);
+    }
+    
   }
 
   async delete(idUser: string, idProject: string) : Promise<string>  {

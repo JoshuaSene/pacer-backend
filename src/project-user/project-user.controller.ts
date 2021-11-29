@@ -45,9 +45,11 @@ export class ProjectUserController {
     );
   }
 
-  @Get('idproject/:idProject')
-  findByProject(@Param('idProject') idProject: string): Promise<ProjectUser> {
-    return this.projectUserService.findByProject(idProject);
+  @Get('idproject/:id')
+  async findByProject(
+    @Param('id') idProject: string
+  ): Promise<ProjectUser[]> {
+    return await this.projectUserService.findByProject(idProject);
   }
 
   @Get('find-many')
@@ -82,11 +84,9 @@ export class ProjectUserController {
 
   @Patch()
   update(
-    @Query('idUser') idUser: string,
-    @Query('idProject') idProject: string,
     @Body() dto: UpdateProjectUserDto,
   ) {
-    return this.projectUserService.update(idUser, idProject, dto);
+    return this.projectUserService.update( dto );
   }
 
   @Delete()

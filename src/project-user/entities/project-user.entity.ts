@@ -12,13 +12,23 @@ export class ProjectUser {
     @PrimaryColumn('uuid', {name: "id_project"})
     idProject: string;
 
-    @ManyToOne(() => Project, (project: Project) => project.idProject, {primary: true})
+    @ManyToOne(() => Project, (project: Project) => project.idProject, {
+        primary: true,
+        eager: true,
+        nullable: false,
+        cascade: false,
+    })
     @JoinColumn({ name: 'id_project' })
-    public project!: Project
+    public project: Project
 
-    @ManyToOne(() => User, (user: User) => user.idUser, {primary: true})
+    @ManyToOne(() => User, (user: User) => user.idUser, {
+        primary: true,
+        eager: true,
+        nullable: false,
+        cascade: false,
+    })
     @JoinColumn({ name: 'id_user' })
-    public user!: User
+    public user: User
 
     @Column({nullable: false, name: "optional"})
     optional: Boolean;
