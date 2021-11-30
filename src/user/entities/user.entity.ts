@@ -83,7 +83,9 @@ export class User {
     @BeforeInsert()
     @BeforeUpdate()
     hashPassword() {
-        this.password = hashSync(this.password, 10);
+        if (this.password !== null){
+            this.password = hashSync(this.password, 10);
+        }
         this.document = this.document !== null ? this.document.replace(/\D/g,'') : null;
     }
 }

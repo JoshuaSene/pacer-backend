@@ -1,12 +1,13 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
   Delete,
-  Query, 
-  BadRequestException 
+  Query,
+  BadRequestException,
+  Param
 } from '@nestjs/common';
 
 import { Helper } from './../commons/helper';
@@ -20,12 +21,12 @@ export class ProjectUserController {
   constructor(private readonly projectUserService: ProjectUserService) {}
 
   @Post()
-  create(@Body() createProjectUserDto: CreateProjectUserDto) {    
+  create(@Body() createProjectUserDto: CreateProjectUserDto) {
     return this.projectUserService.create(createProjectUserDto);
   }
 
   @Get()
-  findAll() : Promise<ProjectUser[]>{
+  findAll(): Promise<ProjectUser[]> {
     return this.projectUserService.findAll();
   }
 
@@ -34,9 +35,21 @@ export class ProjectUserController {
     @Query('idUser') idUser: string,
     @Query('idProject') idProject: string,
     @Query('optional') optional: string,
-    @Query('snActivated') snActivated: string
+    @Query('snActivated') snActivated: string,
   ): Promise<ProjectUser> {
-    return this.projectUserService.find(idUser, idProject, optional, snActivated);
+    return this.projectUserService.find(
+      idUser,
+      idProject,
+      optional,
+      snActivated,
+    );
+  }
+
+  @Get('idproject/:id')
+  async findByProject(
+    @Param('id') idProject: string
+  ): Promise<ProjectUser[]> {
+    return await this.projectUserService.findByProject(idProject);
   }
 
   @Get('find-many')
@@ -44,29 +57,36 @@ export class ProjectUserController {
     @Query('snActivated') snActivated: string,
     @Query('idUser') idUser?: string,
     @Query('optional') optional?: string,
-    @Query('idProject') idProject?: string
+    @Query('idProject') idProject?: string,
   ): Promise<ProjectUser[]> {
-    if(Helper.isEmpty(idUser) && Helper.isEmpty(idProject)) {
-      throw new BadRequestException('Neither idUser or idProject where provided. At least one of them must be provided.');
+    if (Helper.isEmpty(idUser) && Helper.isEmpty(idProject)) {
+      throw new BadRequestException(
+        'Neither idUser or idProject where provided. At least one of them must be provided.',
+      );
     }
 
-    if(Helper.isEmpty(idUser)) {
+    if (Helper.isEmpty(idUser)) {
       return this.projectUserService.findForUser(idUser, optional, snActivated);
     }
-    
-    if(Helper.isEmpty(idProject)) {
-      return this.projectUserService.findForProject(idProject, optional, snActivated);
+
+    if (Helper.isEmpty(idProject)) {
+      return this.projectUserService.findForProject(
+        idProject,
+        optional,
+        snActivated,
+      );
     }
 
-    throw new BadRequestException('You must provide idUser or idProject, not both.');
+    throw new BadRequestException(
+      'You must provide idUser or idProject, not both.',
+    );
   }
 
   @Patch()
   update(
-    @Query('idUser') idUser: string,
-    @Query('idProject') idProject: string, 
-    @Body() dto: UpdateProjectUserDto) {
-    return this.projectUserService.update(idUser, idProject, dto);
+    @Body() dto: UpdateProjectUserDto,
+  ) {
+    return this.projectUserService.update( dto );
   }
 
   @Delete()

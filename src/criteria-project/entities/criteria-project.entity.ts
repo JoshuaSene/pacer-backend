@@ -28,7 +28,7 @@ export class CriteriaProject {
         cascade: false,
     })
     @JoinColumn({ name: 'id_criteria' })
-    public criteria!: Criteria
+    public criteria: Criteria
 
     @Column({nullable: false, name: "min_grade"})
     minGrade: number;
